@@ -1,0 +1,58 @@
+plugins {
+    id 'org.springframework.boot' version '2.4.3'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
+}
+
+apply plugin: 'groovy'
+
+
+group = 'no.fint'
+sourceCompatibility = '11'
+
+
+configurations {
+    implementationOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url "https://repo.fintlabs.no/releases"
+    }
+    mavenLocal()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'io.springfox:springfox-boot-starter:3.0.0'
+    implementation 'io.springfox:springfox-swagger-ui:3.0.0'
+    runtime 'org.springframework.boot:spring-boot-actuator'
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
+
+    implementation "com.google.guava:guava:30.1-jre"
+
+    implementation 'org.glassfish.jersey.core:jersey-common:2.29.1'
+    implementation 'org.glassfish.jersey.core:jersey-client:2.29.1'
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:2.3.3'
+    implementation 'com.sun.xml.bind:jaxb-impl:2.3.3'
+
+    implementation 'no.fint:fint-sse:1.4.1'
+    implementation 'no.fint:fint-event-model:3.0.1'
+    implementation 'no.fint:fint-relation-model:1.1.6'
+    implementation 'no.fint:fint-model-resource:0.4.1'
+    implementation 'no.fint:fint-okonomi-resource-model-java:3.8.11'
+
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+
+    testImplementation 'cglib:cglib-nodep:3.3.0'
+    testImplementation 'org.spockframework:spock-spring:2.0-M4-groovy-2.5'
+    testImplementation 'org.spockframework:spock-core:2.0-M4-groovy-2.5'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
