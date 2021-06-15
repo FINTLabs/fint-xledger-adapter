@@ -1,0 +1,23 @@
+query GetVareregister($pageSize: Int) {
+    products(first: $pageSize) {
+        edges {
+            __typename
+            node {
+                dbId
+                unit
+                salesPrice
+                createdAt
+                description
+                code
+                taxRule {
+                    code
+                }
+            }
+            cursor
+            __typename
+        }
+        pageInfo {
+            hasNextPage
+        }
+    }
+}

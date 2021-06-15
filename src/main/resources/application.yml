@@ -8,12 +8,8 @@ fint:
       status: /status
       response: /response
       providers:
-        personal: https://beta.felleskomponent.no/administrasjon/personal/provider
-        kodeverk: https://beta.felleskomponent.no/administrasjon/kodeverk/provider
-        fullmakt: https://beta.felleskomponent.no/administrasjon/fullmakt/provider
-        organisasjon: https://beta.felleskomponent.no/administrasjon/organisasjon/provider
-        ## Denne skal flyttes over på ny url
-        ##faktura: https://beta1.felleskomponent.no/betaling/provider
+        faktura: https://beta.felleskomponent.no/okonomi/faktura/provider
+        kodeverk: https://beta.felleskomponent.no/okonomi/kodeverk/provider
 
 #  oauth:
 #    enabled: true

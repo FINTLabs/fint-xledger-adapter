@@ -1,4 +1,4 @@
-package no.fint.provider.adapter.event
+package no.fint.adapter.event
 
 import no.fint.adapter.FintAdapterProps
 import no.fint.adapter.sse.SseInitializer

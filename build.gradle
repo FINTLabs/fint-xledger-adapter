@@ -2,6 +2,7 @@ plugins {
     id 'org.springframework.boot' version '2.4.3'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
+    id 'com.apollographql.apollo' version '2.5.8'
 }
 
 apply plugin: 'groovy'
@@ -29,6 +30,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'io.springfox:springfox-boot-starter:3.0.0'
     implementation 'io.springfox:springfox-swagger-ui:3.0.0'
+    implementation 'com.apollographql.apollo:apollo-runtime:2.5.8'
+    implementation 'com.apollographql.apollo:apollo-http-cache:2.5.8'
     runtime 'org.springframework.boot:spring-boot-actuator'
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 

@@ -2,7 +2,7 @@ package no.fint.adapter.event
 
 import no.fint.adapter.FintAdapterProps
 import no.fint.adapter.event.EventStatusService
-import no.fint.dfo.SupportedActions
+import no.fint.xledger.SupportedActions
 import no.fint.event.model.DefaultActions
 import no.fint.event.model.Event
 import no.fint.event.model.Status
