@@ -23,7 +23,7 @@ public class GraphQlClientService {
         this.apolloClient = apolloClient;
     }
 
-    @PostConstruct
+    //@PostConstruct
     public void query() {
         apolloClient.query(new GetVareregisterQuery(Input.fromNullable(100)))
                 .enqueue(new ApolloCall.Callback<GetVareregisterQuery.Data>() {
