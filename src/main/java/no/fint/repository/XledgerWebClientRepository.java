@@ -1,11 +1,11 @@
 package no.fint.repository;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-
-import java.net.URI;
+import reactor.netty.http.client.HttpClient;
 
 @Repository
 public class XledgerWebClientRepository {
@@ -30,10 +30,13 @@ public class XledgerWebClientRepository {
 
     }
 
-    private WebClient createWebClient(){
+    private WebClient createWebClient() {
         return WebClient.builder()
+                .clientConnector(new ReactorClientHttpConnector(
+                        HttpClient.create().wiretap(true)
+                ))
                 .baseUrl(xledgerGraphQLEndpoint)
-        .defaultHeaders(header -> header.setBearerAuth("token " + xledgerToken))
+                .defaultHeaders(header -> header.add("Authorization", "token " + xledgerToken))
                 .build();
     }
 }
