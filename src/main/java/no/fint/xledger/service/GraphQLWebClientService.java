@@ -1,27 +1,26 @@
 package no.fint.xledger.service;
 
-import com.apollographql.apollo.ApolloCall;
-import com.apollographql.apollo.ApolloClient;
-import com.apollographql.apollo.api.Input;
-import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.exception.ApolloException;
-import com.apollographql.apollo.exception.ApolloParseException;
 import lombok.extern.slf4j.Slf4j;
-import no.fint.GetVareregisterQuery;
-import no.fint.model.Products;
+import no.fint.model.ProductsGraphQLModel;
 import no.fint.repository.GraphQLQuery;
 import no.fint.repository.XledgerWebClientRepository;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import javax.annotation.PostConstruct;
-import javax.validation.constraints.NotNull;
 import java.util.Collections;
-import java.util.Optional;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 public class GraphQLWebClientService {
+
+    private final XledgerWebClientRepository xledgerWebClientRepository;
+
+    public GraphQLWebClientService(XledgerWebClientRepository xledgerWebClientRepository) {
+        this.xledgerWebClientRepository = xledgerWebClientRepository;
+    }
 
     @PostConstruct
     public void query() {
@@ -29,8 +28,7 @@ public class GraphQLWebClientService {
         getProducts();
     }
 
-    private void getProducts()
-    {
+    private void getProducts() {
         String query = "{\n" +
                 "  products(first: 50, after: \"18364637.18364638.18364639\") {\n" +
                 "    edges {\n" +
@@ -55,15 +53,22 @@ public class GraphQLWebClientService {
 
         GraphQLQuery graphQLQuery = new GraphQLQuery(query, Collections.singletonMap("brukernavn", "test"));
 
-         Mono<Products> data =  new XledgerWebClientRepository().post(Products.class, graphQLQuery)
-                 .map(products -> Optional.ofNullable(products.getEdges())
-                         .map(edgesItems -> Optional.ofNullable(edgesItems))
-                 .orElseThrow(new Exception()))
-                 .onErrorResume(error -> {
-                     log.error("I have no idea");
-                     return Mono.empty();
-                 })                      ;
-         log.info("hello");
+        boolean hasNext = true;
+
+
+        do {
+            ProductsGraphQLModel graphQLData = xledgerWebClientRepository
+                    .post(ProductsGraphQLModel.class, graphQLQuery)
+                    .block();
+            hasNext = Objects.requireNonNull(graphQLData).getResult().getProducts().getPageInfo().isHasNextPage();
+            graphQLData
+                    .getResult()
+                    .getProducts()
+                    .getEdges()
+                    .forEach(e -> log.info(e.getNode().getDescription()));
+        } while (hasNext);
+
+        log.info("hello");
 
     }
 }
