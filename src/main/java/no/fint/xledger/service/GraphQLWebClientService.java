@@ -28,13 +28,13 @@ public class GraphQLWebClientService {
         this.xledgerWebClientRepository = xledgerWebClientRepository;
     }
 
-    @PostConstruct
+    //@PostConstruct
     public void query() {
         log.info("This is running");
         getProducts();
     }
 
-    private List<Node> getProducts() {
+    public List<Node> getProducts() {
         GraphQLQuery query = getQuery();
         boolean hasNext = true;
         List<Node> products = new ArrayList<>();
