@@ -1,8 +1,8 @@
-package no.fint.xledger.handler.okonomi;
+package no.fint.xledger.okonomi;
 
 import no.fint.xledger.handler.Handler;
 import no.fint.event.model.Event;
-import no.fint.model.okonomi.faktura.FakturaActions;
+import no.fint.model.okonomi.kodeverk.KodeverkActions;
 import no.fint.model.resource.FintLinks;
 import org.springframework.stereotype.Service;
 
@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.Set;
 
 @Service
-public class UpdateFakturagrunnlagHandler implements Handler {
+public class GetAllMerverdiavgiftHandler implements Handler {
     @Override
     public void accept(Event<FintLinks> fintLinksEvent) {
 
@@ -18,6 +18,6 @@ public class UpdateFakturagrunnlagHandler implements Handler {
 
     @Override
     public Set<String> actions() {
-        return Collections.singleton(FakturaActions.UPDATE_FAKTURAGRUNNLAG.name());
+        return Collections.singleton(KodeverkActions.GET_ALL_MERVERDIAVGIFT.name());
     }
 }

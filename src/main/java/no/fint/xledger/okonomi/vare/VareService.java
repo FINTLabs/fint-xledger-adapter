@@ -1,12 +1,15 @@
-package no.fint.xledger.service;
+package no.fint.xledger.okonomi.vare;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import no.fint.model.resource.okonomi.kodeverk.VareResource;
+import no.fint.xledger.graphql.GraphQLQuery;
+import no.fint.xledger.graphql.XledgerWebClientRepository;
 import no.fint.xledger.model.EdgesItem;
-import no.fint.xledger.model.Node;
 import no.fint.xledger.model.GraphQlResponse;
-import no.fint.xledger.repository.GraphQLQuery;
-import no.fint.xledger.repository.XledgerWebClientRepository;
+import no.fint.xledger.model.Node;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,24 +19,34 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-public class GraphQLWebClientService {
+public class VareService {
 
     @Value("${fint.xledger.graphql.pageSize:500}")
     private int pageSize;
 
     private final XledgerWebClientRepository xledgerWebClientRepository;
+    private final VareFactory vareFactory;
 
-    public GraphQLWebClientService(XledgerWebClientRepository xledgerWebClientRepository) {
+    @Getter
+    private List<VareResource> varer;
+
+
+    public VareService(XledgerWebClientRepository xledgerWebClientRepository, VareFactory vareFactory) {
         this.xledgerWebClientRepository = xledgerWebClientRepository;
+        this.vareFactory = vareFactory;
     }
 
-    //@PostConstruct
-    public void query() {
-        log.info("This is running");
-        getProducts();
+    @Scheduled(initialDelay = 10000, fixedDelayString = "${fint.xledger.kodeverk.refresh-interval:1500000}")
+    public void refresh() {
+        log.info("Refreshing Vare...");
+        varer = queryProducts()
+                .stream()
+                .map(vareFactory::toFint)
+                .collect(Collectors.toList());
+        log.info("End refreshing Vare");
     }
 
-    public List<Node> getProducts() {
+    public List<Node> queryProducts() {
         GraphQLQuery query = getQuery();
         boolean hasNext;
         List<Node> products = new ArrayList<>();
@@ -58,7 +71,7 @@ public class GraphQLWebClientService {
         } while (hasNext);
 
 
-        log.info("Found {} products!", products.size());
+        log.info("Found {} products", products.size());
         return products;
 
     }

@@ -1,4 +1,4 @@
-package no.fint.xledger.handler.okonomi;
+package no.fint.xledger.okonomi;
 
 import no.fint.xledger.handler.Handler;
 import no.fint.event.model.Event;
@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.Set;
 
 @Service
-public class UpdateFakturaHandler implements Handler {
+public class UpdateFakturagrunnlagHandler implements Handler {
     @Override
     public void accept(Event<FintLinks> fintLinksEvent) {
 
@@ -18,6 +18,6 @@ public class UpdateFakturaHandler implements Handler {
 
     @Override
     public Set<String> actions() {
-        return Collections.singleton(FakturaActions.UPDATE_FAKTURA.name());
+        return Collections.singleton(FakturaActions.UPDATE_FAKTURAGRUNNLAG.name());
     }
 }

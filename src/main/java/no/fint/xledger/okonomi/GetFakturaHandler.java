@@ -1,4 +1,4 @@
-package no.fint.xledger.handler.okonomi;
+package no.fint.xledger.okonomi;
 
 import no.fint.xledger.handler.Handler;
 import no.fint.event.model.Event;

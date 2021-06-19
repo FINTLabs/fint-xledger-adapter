@@ -1,6 +1,7 @@
-package no.fint.xledger.handler.okonomi;
+package no.fint.xledger.okonomi.vare;
 
 import no.fint.event.model.Event;
+import no.fint.event.model.ResponseStatus;
 import no.fint.model.okonomi.kodeverk.KodeverkActions;
 import no.fint.model.resource.FintLinks;
 import no.fint.xledger.handler.Handler;
@@ -11,9 +12,17 @@ import java.util.Set;
 
 @Service
 public class GetAllVareHandler implements Handler {
-    @Override
-    public void accept(Event<FintLinks> fintLinksEvent) {
 
+    private final VareService vareService;
+
+    public GetAllVareHandler(VareService vareService) {
+        this.vareService = vareService;
+    }
+
+    @Override
+    public void accept(Event<FintLinks> response) {
+        vareService.getVarer().forEach(response::addData);
+        response.setResponseStatus(ResponseStatus.ACCEPTED);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package no.fint.xledger.repository;
+package no.fint.xledger.graphql;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;

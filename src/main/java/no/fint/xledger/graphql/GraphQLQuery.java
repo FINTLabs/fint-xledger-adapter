@@ -1,4 +1,4 @@
-package no.fint.xledger.repository;
+package no.fint.xledger.graphql;
 
 import lombok.*;
 
