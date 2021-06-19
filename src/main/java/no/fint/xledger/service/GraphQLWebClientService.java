@@ -1,15 +1,14 @@
 package no.fint.xledger.service;
 
 import lombok.extern.slf4j.Slf4j;
-import no.fint.model.EdgesItem;
-import no.fint.model.Node;
-import no.fint.model.ProductsGraphQLModel;
-import no.fint.repository.GraphQLQuery;
-import no.fint.repository.XledgerWebClientRepository;
+import no.fint.xledger.model.EdgesItem;
+import no.fint.xledger.model.Node;
+import no.fint.xledger.model.GraphQlResponse;
+import no.fint.xledger.repository.GraphQLQuery;
+import no.fint.xledger.repository.XledgerWebClientRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -36,13 +35,13 @@ public class GraphQLWebClientService {
 
     public List<Node> getProducts() {
         GraphQLQuery query = getQuery();
-        boolean hasNext = true;
+        boolean hasNext;
         List<Node> products = new ArrayList<>();
 
 
         do {
-            ProductsGraphQLModel graphQLData = xledgerWebClientRepository
-                    .post(ProductsGraphQLModel.class, query)
+            GraphQlResponse graphQLData = xledgerWebClientRepository
+                    .post(GraphQlResponse.class, query)
                     .block();
             List<EdgesItem> edges = Objects.requireNonNull(graphQLData).getResult().getProducts().getEdges();
 
@@ -85,7 +84,7 @@ public class GraphQLWebClientService {
                 "      hasNextPage\n" +
                 "    }\n" +
                 "  }\n" +
-                "}", pageSize, cursor), null);
+                "}", pageSize, cursor));
     }
 
     private GraphQLQuery getQuery() {
@@ -109,6 +108,6 @@ public class GraphQLWebClientService {
                 "      hasNextPage\n" +
                 "    }\n" +
                 "  }\n" +
-                "}", pageSize), null);
+                "}", pageSize));
     }
 }
