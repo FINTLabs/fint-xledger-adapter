@@ -1,5 +1,6 @@
-package no.fint.xledger.okonomi;
+package no.fint.xledger.okonomi.mva;
 
+import no.fint.event.model.ResponseStatus;
 import no.fint.xledger.handler.Handler;
 import no.fint.event.model.Event;
 import no.fint.model.okonomi.kodeverk.KodeverkActions;
@@ -11,9 +12,15 @@ import java.util.Set;
 
 @Service
 public class GetAllMerverdiavgiftHandler implements Handler {
-    @Override
-    public void accept(Event<FintLinks> fintLinksEvent) {
 
+    private final MvaService mvaService;
+
+    public GetAllMerverdiavgiftHandler(MvaService mvaService) { this.mvaService = mvaService; }
+
+    @Override
+    public void accept(Event<FintLinks> response) {
+        mvaService.getMva().forEach(response::addData);
+        response.setResponseStatus(ResponseStatus.ACCEPTED);
     }
 
     @Override
