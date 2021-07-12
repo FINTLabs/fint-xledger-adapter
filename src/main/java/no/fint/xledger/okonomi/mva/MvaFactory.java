@@ -17,23 +17,28 @@ public class MvaFactory {
         systemId.setIdentifikatorverdi(Integer.toString(xledgerMva.getDbId()));
         mva.setSystemId(systemId);
 
-        // TODO Trond: finn en måte å hente mva-prosentverdier via GraphQL. This is not the rigth way to do it:
-        switch(xledgerMva.getCode2().getName())
-        {
-            case "ZERO_LEVEL":
-                mva.setSats(0L);
-                break;
-            case "LOW_LEVEL":
-                mva.setSats(120L);
-                break;
-            case "MID_LEVEL":
-                mva.setSats(150L);
-                break;
-            case "HIGH_LEVEL":
-                mva.setSats((250L));
-                break;
-            default:
-                throw new UnsupportedOperationException("Ingen støtte for mva-typen:" + xledgerMva.getCode2().getName());
+        if (xledgerMva.getCode2() != null) {
+            // TODO Trond: finn en måte å hente mva-prosentverdier via GraphQL. This is not the rigth way to do it:
+            switch (xledgerMva.getCode2().getName()) {
+                case "ZERO_LEVEL":
+                    mva.setSats(0L);
+                    break;
+                case "LOW_LEVEL":
+                    mva.setSats(120L);
+                    break;
+                case "MID_LEVEL":
+                    mva.setSats(150L);
+                    break;
+                case "HIGH_LEVEL":
+                    mva.setSats(250L);
+                    break;
+                case "SPECIAL_RATE":
+                    // TODO How should this special rate be handled?
+                    mva.setSats(0L);
+                    break;
+                default:
+                    throw new UnsupportedOperationException("Ingen støtte for mva-typen:" + xledgerMva.getCode2().getName());
+            }
         }
 
         return mva;
