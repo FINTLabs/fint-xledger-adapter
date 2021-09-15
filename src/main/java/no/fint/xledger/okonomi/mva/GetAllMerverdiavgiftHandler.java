@@ -13,13 +13,16 @@ import java.util.Set;
 @Service
 public class GetAllMerverdiavgiftHandler implements Handler {
 
-    private final MvaService mvaService;
+    private final MerverdiavgiftService merverdiavgiftService;
 
-    public GetAllMerverdiavgiftHandler(MvaService mvaService) { this.mvaService = mvaService; }
+    public GetAllMerverdiavgiftHandler(MerverdiavgiftService merverdiavgiftService)
+    {
+        this.merverdiavgiftService = merverdiavgiftService;
+    }
 
     @Override
     public void accept(Event<FintLinks> response) {
-        mvaService.getMva().forEach(response::addData);
+        merverdiavgiftService.getMva().forEach(response::addData);
         response.setResponseStatus(ResponseStatus.ACCEPTED);
     }
 

@@ -7,7 +7,7 @@ import no.fint.xledger.utilities.ConvertUtilities;
 import org.springframework.stereotype.Service;
 
 @Service
-public class VareFactory {
+public class VareMapper {
 
     public VareResource toFint(Node product) {
         VareResource vare = new VareResource();

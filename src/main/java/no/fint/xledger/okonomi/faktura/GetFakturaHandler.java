@@ -1,4 +1,4 @@
-package no.fint.xledger.okonomi;
+package no.fint.xledger.okonomi.faktura;
 
 import no.fint.xledger.handler.Handler;
 import no.fint.event.model.Event;

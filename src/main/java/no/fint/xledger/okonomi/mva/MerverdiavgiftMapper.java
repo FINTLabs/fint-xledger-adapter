@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MvaFactory {
+public class MerverdiavgiftMapper {
     @Autowired
     private ConfigProperties configProperties;
 
@@ -23,6 +23,8 @@ public class MvaFactory {
         mva.setSystemId(systemId);
 
         if (xledgerMva.getCode2() != null) {
+            // By sept 2021 there is no way to get mva-rates from Xledger, we are getting a code instead.
+            // Codes and corresponding rates will therefor be set by configuration.
             // Eksempel:
             //  HIGH_LEVEL = 25%
             //  MID_LEVEL = 15%

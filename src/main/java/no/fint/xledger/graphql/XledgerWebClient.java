@@ -10,9 +10,9 @@ import reactor.netty.http.client.HttpClient;
 
 @Repository
 @Component
-public class XledgerWebClientRepository {
+public class XledgerWebClient {
 
-    public XledgerWebClientRepository() {
+    public XledgerWebClient() {
     }
 
     @Value("${fint.xledger.graphql.endpoint:https://demo.xledger.net/graphql}")
@@ -27,8 +27,6 @@ public class XledgerWebClientRepository {
                         .bodyValue(graphQLQuery)
                         .retrieve()
                         .bodyToMono(clazz);
-
-
     }
 
     private WebClient createWebClient() {
