@@ -13,6 +13,7 @@ public abstract class Cache<T> {
 
     public Cache(Duration maxDuration) {
         this.maxDuration = maxDuration;
+        this.dataCollectedAt = Optional.empty();
         list = new ArrayList<>(0);
     }
 
