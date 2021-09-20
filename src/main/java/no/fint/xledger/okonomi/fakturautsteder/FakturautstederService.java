@@ -2,22 +2,25 @@ package no.fint.xledger.okonomi.fakturautsteder;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import no.fint.model.administrasjon.personal.Personalressurs;
 import no.fint.model.resource.Link;
 import no.fint.model.resource.administrasjon.personal.PersonalressursResource;
+import no.fint.model.resource.okonomi.faktura.FakturautstederResource;
 import no.fint.model.resource.okonomi.kodeverk.MerverdiavgiftResource;
 import no.fint.model.resource.utdanning.elev.SkoleressursResource;
 import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
 import no.fint.xledger.fintclient.FintRepository;
 import no.fint.xledger.graphql.caches.ContactCache;
 import no.fint.xledger.graphql.caches.SalgsordregruppeCache;
+import no.fint.xledger.model.contacts.Contact;
 import no.fint.xledger.model.objectValues.Node;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -31,7 +34,7 @@ public class FakturautstederService {
     private final FintRepository fintRepository;
 
     @Getter
-    private List<MerverdiavgiftResource> mva;
+    private List<FakturautstederResource> fakturautstedere;
 
     @Value("${fint.client.details.assetId}")
     private String organization;
@@ -45,13 +48,8 @@ public class FakturautstederService {
 
     @Scheduled(initialDelay = 9000, fixedDelayString = "${fint.xledger.kodeverk.refresh-interval:1500000}")
     public void refresh() {
-        log.info("Refreshing Fakturautstedere...");
-        //mva = cache.get()
-        //        .stream()
-        //        .map(mapper::toFint)
-        //        .collect(Collectors.toList());
-
-
+        log.debug("Refreshing Fakturautstedere...");
+        fakturautstedere = new ArrayList<>();
 
         for (Node salgsordregruppe : salgsordregrupper.get()) {
             String orgNo = extractOrgnummerFromDescription(salgsordregruppe.getDescription());
@@ -59,25 +57,52 @@ public class FakturautstederService {
 
             SkoleResource skoleResource = fintRepository.getSkole(organization, orgNo);
             if (skoleResource == null) continue;
-            log.debug("Found school: " + skoleResource.getNavn());
 
             List<SkoleressursResource> skoleressursResources = fintRepository.getSkoleressurser(organization, skoleResource.getSkoleressurs());
-            log.debug("That contains " + skoleressursResources.size() + " skoleressurser");
+            log.info("School " + skoleResource.getNavn() + " contains " + skoleressursResources.size() + " skoleressurser");
 
-            for (SkoleressursResource skoleressurs : skoleressursResources) {
-                List<Link> links = skoleressurs.getPersonalressurs();
-                if (links.size() == 0) continue;
-                // TODO Avklare hvorfor det er en liste
-
-                PersonalressursResource personalressursResource = fintRepository.getPersonalressurs(organization, links.get(0));
-
-                //- Match kode på personalresurs med contacts fra xledger
-                //contacts.get().stream().findFirst()
+            for (Contact matchingContact : findMatchingContacts(skoleressursResources)) {
+                fakturautstedere.add(mapper.toFint(salgsordregruppe, skoleResource, matchingContact));
+                log.debug(skoleResource.getNavn() + " contact match: " + matchingContact.getName());
             }
         }
 
-        log.info("End refreshing Fakturautstedere");
+        log.info("Found " + fakturautstedere.size() + " fakturautstedere");
+        log.debug("End refreshing Fakturautstedere");
     }
+
+    private List<Contact> findMatchingContacts(List<SkoleressursResource> skoleressursResources) {
+
+        ArrayList<Contact> matchingContacts = new ArrayList<>();
+
+        for (SkoleressursResource skoleressurs : skoleressursResources) {
+            List<Link> links = skoleressurs.getPersonalressurs();
+            if (links.size() == 0) continue;
+            // TODO Avklare hvorfor det er en liste
+
+            PersonalressursResource personalressursResource = fintRepository.getPersonalressurs(organization, links.get(0));
+
+            //- Match kode på personalresurs med contacts fra xledger
+            List<Contact> singleMatch = contacts
+                    .get()
+                    .stream()
+                    .filter(c -> c.getContact().getCode() == personalressursResource.getAnsattnummer().getIdentifikatorverdi())
+                    .map(no.fint.xledger.model.contacts.Node::getContact)
+                    .collect(Collectors.toList());
+
+            if (singleMatch.size() == 0) {
+                continue;
+            } else if (singleMatch.size() == 1) {
+                matchingContacts.add(singleMatch.stream().findFirst().get());
+            } else {
+                log.warn("There are " + singleMatch.size() + " matching contacts with kode: " + personalressursResource.getAnsattnummer().getIdentifikatorverdi());
+                matchingContacts.add(singleMatch.stream().findFirst().get());
+            }
+        }
+
+        return matchingContacts;
+    }
+
 
     private String extractOrgnummerFromDescription(String salgsordregruppeDescription) {
         // Example input: 91071 Kvadraturen videregående skole (974 595 117)
