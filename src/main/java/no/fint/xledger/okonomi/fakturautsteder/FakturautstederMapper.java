@@ -15,10 +15,10 @@ public class FakturautstederMapper {
         FakturautstederResource fakturautsteder = new FakturautstederResource();
 
         Identifikator identifikator = new Identifikator();
-        identifikator.setIdentifikatorverdi(SellerUtil.createId(salgsordregruppe, contact));
+        identifikator.setIdentifikatorverdi(SellerUtil.createFakturautstederId(salgsordregruppe, contact));
         fakturautsteder.setSystemId(identifikator);
 
-        fakturautsteder.setNavn(SellerUtil.createName(skoleResource, contact));
+        fakturautsteder.setNavn(SellerUtil.createFakturautstederName(skoleResource, contact));
 
         return fakturautsteder;
     }
