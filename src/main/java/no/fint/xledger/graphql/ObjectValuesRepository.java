@@ -47,7 +47,7 @@ public class ObjectValuesRepository {
 
         } while (hasNext);
 
-        log.info("Found {} merverdiavgift rows", mvaLines.size());
+        log.info("Found {} objectValues of objectKind " + objectKind, mvaLines.size());
         return mvaLines;
     }
 

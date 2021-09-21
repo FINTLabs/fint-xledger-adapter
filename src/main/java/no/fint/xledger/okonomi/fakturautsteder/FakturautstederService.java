@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.fint.model.resource.Link;
 import no.fint.model.resource.administrasjon.personal.PersonalressursResource;
 import no.fint.model.resource.okonomi.faktura.FakturautstederResource;
-import no.fint.model.resource.okonomi.kodeverk.MerverdiavgiftResource;
 import no.fint.model.resource.utdanning.elev.SkoleressursResource;
 import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
 import no.fint.xledger.fintclient.FintRepository;
@@ -76,19 +75,24 @@ public class FakturautstederService {
         ArrayList<Contact> matchingContacts = new ArrayList<>();
 
         for (SkoleressursResource skoleressurs : skoleressursResources) {
+
             List<Link> links = skoleressurs.getPersonalressurs();
             if (links.size() == 0) continue;
             // TODO Avklare hvorfor det er en liste
 
             PersonalressursResource personalressursResource = fintRepository.getPersonalressurs(organization, links.get(0));
 
+            String ansattNr =  personalressursResource.getAnsattnummer().getIdentifikatorverdi();
+
             //- Match kode på personalresurs med contacts fra xledger
             List<Contact> singleMatch = contacts
                     .get()
                     .stream()
-                    .filter(c -> c.getContact().getCode() == personalressursResource.getAnsattnummer().getIdentifikatorverdi())
+                    .filter(c -> c != null && c.getContact() != null && c.getContact().getCode() != null && c.getContact().getCode().equals(ansattNr))
                     .map(no.fint.xledger.model.contacts.Node::getContact)
                     .collect(Collectors.toList());
+
+            log.debug("Kontakten " + personalressursResource.getKontaktinformasjon().getEpostadresse() + " gav " + singleMatch.size() + " treff");
 
             if (singleMatch.size() == 0) {
                 continue;
@@ -98,6 +102,9 @@ public class FakturautstederService {
                 log.warn("There are " + singleMatch.size() + " matching contacts with kode: " + personalressursResource.getAnsattnummer().getIdentifikatorverdi());
                 matchingContacts.add(singleMatch.stream().findFirst().get());
             }
+
+            // TODO: Logg navn på match, for å sjekke
+            log.debug("Match: " + personalressursResource.getKontaktinformasjon().getEpostadresse() + " med " + singleMatch.stream().findFirst().get().getEmail());
         }
 
         return matchingContacts;
