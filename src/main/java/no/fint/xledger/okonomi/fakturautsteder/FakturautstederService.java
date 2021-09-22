@@ -61,7 +61,7 @@ public class FakturautstederService {
             log.info("School " + skoleResource.getNavn() + " contains " + skoleressursResources.size() + " skoleressurser");
 
             for (Contact matchingContact : findMatchingContacts(skoleressursResources)) {
-                fakturautstedere.add(mapper.toFint(salgsordregruppe, skoleResource, matchingContact));
+                fakturautstedere.add(mapper.toFint(salgsordregruppe, skoleResource, matchingContact, orgNo));
                 log.debug(skoleResource.getNavn() + " contact match: " + matchingContact.getName());
             }
         }
@@ -82,7 +82,7 @@ public class FakturautstederService {
 
             PersonalressursResource personalressursResource = fintRepository.getPersonalressurs(organization, links.get(0));
 
-            String ansattNr =  personalressursResource.getAnsattnummer().getIdentifikatorverdi();
+            String ansattNr = personalressursResource.getAnsattnummer().getIdentifikatorverdi();
 
             //- Match kode på personalresurs med contacts fra xledger
             List<Contact> singleMatch = contacts
