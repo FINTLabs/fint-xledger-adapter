@@ -42,25 +42,21 @@ public class FintRepository {
     }
 
     public PersonalressursResource getPersonalressurs(String orgId, Link link) {
+        try {
             return resolverService.resolve(orgId, link.getHref(), PersonalressursResource.class);
+        } catch (Exception e) {
+            // TODO: Better way to handle this? (EntityNotFoundException)
+            // org.springframework.web.client.HttpClientErrorException$NotFound: 404 : [{"message":"912912912","exception":"class no.fint.consumer.exceptions.EntityNotFoundException"}]
+            log.info(e.toString());
+        }
+        return null;
     }
 
     private String resolveUrlSkole(String orgNummer) {
         // TODO: Find the proper way to do this (this should not be hardcoded)
-        String endpointConfig = String.format("https://api.felleskomponent.no/utdanning/utdanningsprogram/skole/organisasjonsnummer/%s", orgNummer);
+        String endpointConfig = String.format("https://beta.felleskomponent.no/utdanning/utdanningsprogram/skole/organisasjonsnummer/%s", orgNummer);
         return endpointConfig;
     }
-
-
-    //public List<PersonResource> getPersoner(List<Link> lins){
-    //}
-
-    //Optional<VareResource> varelinje = fakturalinje
-    //        .getVare()
-    //        .stream()
-    //        .map(Link::getHref)
-    //        .map(uri -> resolverService.resolve(event.getOrgId(), uri, VareResource.class))
-    //        .findAny();
 
     /*
     Personalressurs

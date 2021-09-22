@@ -29,13 +29,8 @@ public class MerverdiavgiftCache extends Cache<Node> {
 
     public Node getByCode(String merverdiavgiftCode) {
         List<Node> rows = get().stream().filter(n -> n.getCode().equals(merverdiavgiftCode)).collect(Collectors.toList());
-        if (rows.size() == 0) {
-            return null;
-        } else if (rows.size() == 1) {
-            return rows.get(0);
-        } else {
-            log.warn("Multiple objectValues for merverdiavgift with code=" + merverdiavgiftCode);
-            return rows.get(1);
-        }
+        if (rows.size() == 0) return null;
+        if (rows.size() > 1) log.warn("Multiple objectValues for merverdiavgift with code=" + merverdiavgiftCode);
+        return rows.get(0);
     }
 }

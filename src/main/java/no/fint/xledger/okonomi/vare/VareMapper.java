@@ -31,6 +31,7 @@ public class VareMapper {
         Identifikator systemId = new Identifikator();
         systemId.setIdentifikatorverdi(SellerUtil.createVareId(fakturautsteder, product));
         vare.setSystemId(systemId);
+        // id=17788784-698445_20758347 <fakturautsteder>_<product>
 
         vare.setKode(product.getCode());
         vare.setPris(ConvertUtilities.stringPriceToLongOre(product.getSalesPrice()));

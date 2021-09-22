@@ -52,7 +52,7 @@ public class FakturautstederService {
 
         for (Node salgsordregruppe : salgsordregrupper.get()) {
             String orgNo = extractOrgnummerFromDescription(salgsordregruppe.getDescription());
-            if (orgNo == null || orgNo.length() == 0) continue;
+            if (orgNo.length() == 0) continue;
 
             SkoleResource skoleResource = fintRepository.getSkole(organization, orgNo);
             if (skoleResource == null) continue;
@@ -81,6 +81,10 @@ public class FakturautstederService {
             // TODO Avklare hvorfor det er en liste
 
             PersonalressursResource personalressursResource = fintRepository.getPersonalressurs(organization, links.get(0));
+            if (personalressursResource == null) {
+                log.error("Didn't find personalresurs for skoleressurs " + links.get(0));
+                continue;
+            }
 
             String ansattNr = personalressursResource.getAnsattnummer().getIdentifikatorverdi();
 

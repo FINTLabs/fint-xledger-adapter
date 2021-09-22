@@ -14,10 +14,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -52,13 +50,15 @@ public class VareService {
             // Filtere pr fakturautsteder
             // Vare."code": "500100-1011",
 
-            String salgsordregruppeCode = SellerUtil.extractSalgsordregruppeDbId(fakturautsteder.getSystemId().getIdentifikatorverdi());
+            String salgsordregruppeDbId = SellerUtil.extractSalgsordregruppeDbId(fakturautsteder.getSystemId().getIdentifikatorverdi());
+            String salgsordregruppeCode = salgsordregruppeCache.getCodeByDbId(salgsordregruppeDbId);
 
-            for (Node vare : filterVarerByCode(salgsordregruppeCode + "-")) {
+            for (Node vare : filterVarerByCode(salgsordregruppeCode)) {
                 varer.add(mapper.toFint(vare, fakturautsteder));
             }
         }
 
+        log.info("Found " + varer.size() + " varer");
         log.info("End refreshing Vare");
     }
 
