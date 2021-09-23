@@ -3,6 +3,7 @@ package no.fint.xledger.fintclient;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.model.resource.Link;
 import no.fint.model.resource.administrasjon.personal.PersonalressursResource;
+import no.fint.model.resource.felles.PersonResource;
 import no.fint.model.resource.utdanning.elev.SkoleressursResource;
 import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,5 +78,9 @@ public class FintRepository {
 
     public String resolveLink(List<Link> links) {
         return links.stream().map(Link::getHref).findAny().orElseThrow(IllegalArgumentException::new);
+    }
+
+    public PersonResource getPerson(String orgId, List<Link> links) {
+        return resolverService.resolve(orgId, resolveLink(links), PersonResource.class);
     }
 }

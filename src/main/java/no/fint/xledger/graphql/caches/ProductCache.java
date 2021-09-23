@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductCache extends Cache<Node> {
@@ -20,5 +21,12 @@ public class ProductCache extends Cache<Node> {
     @Override
     protected List<Node> getData() {
         return repository.queryProducts();
+    }
+
+    public List<Node> filterVarerByCode(String startsWith) {
+        return get()
+                .stream()
+                .filter(v -> v.getCode().startsWith(startsWith))
+                .collect(Collectors.toList());
     }
 }

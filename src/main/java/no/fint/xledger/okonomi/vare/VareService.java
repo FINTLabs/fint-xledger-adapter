@@ -53,7 +53,7 @@ public class VareService {
             String salgsordregruppeDbId = SellerUtil.extractSalgsordregruppeDbId(fakturautsteder.getSystemId().getIdentifikatorverdi());
             String salgsordregruppeCode = salgsordregruppeCache.getCodeByDbId(salgsordregruppeDbId);
 
-            for (Node vare : filterVarerByCode(salgsordregruppeCode)) {
+            for (Node vare : cache.filterVarerByCode(salgsordregruppeCode)) {
                 varer.add(mapper.toFint(vare, fakturautsteder));
             }
         }
@@ -62,11 +62,5 @@ public class VareService {
         log.info("End refreshing Vare");
     }
 
-    private List<Node> filterVarerByCode(String startsWith) {
-        return cache
-                .get()
-                .stream()
-                .filter(v -> v.getCode().startsWith(startsWith))
-                .collect(Collectors.toList());
-    }
+
 }

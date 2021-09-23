@@ -56,5 +56,11 @@ dependencies {
     testImplementation 'org.spockframework:spock-spring:2.0-M4-groovy-2.5'
     testImplementation 'org.spockframework:spock-core:2.0-M4-groovy-2.5'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    compile('org.jooq:jool-java-8:0.9.14')
+    // Spring adds validation-api 1.x and hibernate-validator 5.x by default, all three dependencies needed to override.
+    compile 'javax.validation:validation-api:2.0.1.Final'
+    compile 'org.hibernate.validator:hibernate-validator:6.0.16.Final'
+    compile 'org.hibernate.validator:hibernate-validator-annotation-processor:6.0.16.Final'
 }
 

@@ -12,8 +12,8 @@ import no.fint.xledger.graphql.caches.ContactCache;
 import no.fint.xledger.graphql.caches.SalgsordregruppeCache;
 import no.fint.xledger.model.contacts.Contact;
 import no.fint.xledger.model.objectValues.Node;
+import no.fint.xledger.okonomi.ConfigProperties;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -32,17 +32,18 @@ public class FakturautstederService {
     @Autowired
     private final FintRepository fintRepository;
 
+    @Autowired
+    private final ConfigProperties configProperties;
+
     @Getter
     private List<FakturautstederResource> fakturautstedere;
 
-    @Value("${fint.client.details.assetId}")
-    private String organization;
-
-    public FakturautstederService(SalgsordregruppeCache salgsordregrupper, ContactCache contacts, FakturautstederMapper mapper, FintRepository fintRepository) {
+    public FakturautstederService(SalgsordregruppeCache salgsordregrupper, ContactCache contacts, FakturautstederMapper mapper, FintRepository fintRepository, ConfigProperties configProperties) {
         this.salgsordregrupper = salgsordregrupper;
         this.contacts = contacts;
         this.mapper = mapper;
         this.fintRepository = fintRepository;
+        this.configProperties = configProperties;
     }
 
     @Scheduled(initialDelay = 9000, fixedDelayString = "${fint.xledger.kodeverk.refresh-interval:1500000}")
@@ -54,10 +55,10 @@ public class FakturautstederService {
             String orgNo = extractOrgnummerFromDescription(salgsordregruppe.getDescription());
             if (orgNo.length() == 0) continue;
 
-            SkoleResource skoleResource = fintRepository.getSkole(organization, orgNo);
+            SkoleResource skoleResource = fintRepository.getSkole(configProperties.getOrganization(), orgNo);
             if (skoleResource == null) continue;
 
-            List<SkoleressursResource> skoleressursResources = fintRepository.getSkoleressurser(organization, skoleResource.getSkoleressurs());
+            List<SkoleressursResource> skoleressursResources = fintRepository.getSkoleressurser(configProperties.getOrganization(), skoleResource.getSkoleressurs());
             log.info("School " + skoleResource.getNavn() + " contains " + skoleressursResources.size() + " skoleressurser");
 
             for (Contact matchingContact : findMatchingContacts(skoleressursResources)) {
@@ -80,7 +81,7 @@ public class FakturautstederService {
             if (links.size() == 0) continue;
             // TODO Avklare hvorfor det er en liste
 
-            PersonalressursResource personalressursResource = fintRepository.getPersonalressurs(organization, links.get(0));
+            PersonalressursResource personalressursResource = fintRepository.getPersonalressurs(configProperties.getOrganization(), links.get(0));
             if (personalressursResource == null) {
                 log.error("Didn't find personalresurs for skoleressurs " + links.get(0));
                 continue;
