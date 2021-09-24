@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 @Slf4j
 @Repository
-public class InvoiceBaseItemRepository {
+public class InvoiceBaseItemRepository extends GraphQLRepository {
     private final XledgerWebClient xledgerWebClient;
 
     public InvoiceBaseItemRepository(XledgerWebClient xledgerWebClient) {
@@ -74,14 +74,5 @@ public class InvoiceBaseItemRepository {
                 invoiceItem.getUnitPrice(),
                 invoiceItem.getQuantity(),
                 invoiceItem.getLineNumber()));
-    }
-
-    private String quote(String input) {
-        return String.format("\"%s\"", input);
-    }
-
-    private String nullOrQuote(String input) {
-        if (input == null) return "null";
-        return quote(input);
     }
 }

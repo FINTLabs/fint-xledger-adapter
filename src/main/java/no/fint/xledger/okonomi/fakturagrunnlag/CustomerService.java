@@ -22,21 +22,29 @@ public class CustomerService {
     @Autowired
     private FintRepository fintRepository;
 
+    @Autowired
+    private CustomerMapper mapper;
+
     public int createOrUpdate(List<Link> personLinks) {
         PersonResource person = fintRepository.getPerson(configProperties.getOrganization(), personLinks);
         int companyDbId = customerRepository.getCompanyDbId(person.getFodselsnummer().getIdentifikatorverdi());
 
-        if (companyDbId == 0) {
-            companyDbId = customerRepository.addCompany(person.getFodselsnummer().getIdentifikatorverdi(), configProperties.getOwnerDbId());
+        int customerDbId = 0;
 
-            //int customerDbId = customerRepository.getCustomerDbId(companyDbId);
+        if (companyDbId == 0) {
             // add person
+            companyDbId = customerRepository.addCompany(person.getFodselsnummer().getIdentifikatorverdi(), configProperties.getOwnerDbId());
+            customerDbId = customerRepository.addCustomer(mapper.toXledger(person, companyDbId));
         } else {
             // update person
+            customerDbId = customerRepository.getCustomerDbId(String.valueOf(companyDbId));
+            if (customerDbId == 0) {
+                customerDbId = customerRepository.addCustomer(mapper.toXledger(person, companyDbId));
+            } else {
+                customerDbId = customerRepository.updateCustomer(mapper.toXledger(person, companyDbId), customerDbId);
+            }
         }
 
-        int subledgerDbId = 0;
-
-        return subledgerDbId;
+        return customerDbId;
     }
 }
