@@ -11,7 +11,7 @@ import no.fint.xledger.model.objectValues.Node;
  ***/
 public class SellerUtil {
     public static String createFakturautstederId(Node ordresalgsgruppe, Contact contact) {
-        return ordresalgsgruppe.getDbId() + "-" + contact.getDbId();
+        return ordresalgsgruppe.getDbId() + "-" + contact.getCode();
     }
 
     public static String createFakturautstederName(SkoleResource skoleResource, Contact contact) {

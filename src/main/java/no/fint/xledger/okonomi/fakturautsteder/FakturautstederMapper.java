@@ -36,7 +36,7 @@ public class FakturautstederMapper {
         fakturautsteder.addOrganisasjonselement(Link.with(OrganisasjonselementResource.class, "organisasjonsnummer", organisasjonsnummer));
 
         for (no.fint.xledger.model.Node product : products.filterVarerByCode(salgsordregruppe.getCode())) {
-            fakturautsteder.addVare(Link.with(VareResource.class, "systemId", SellerUtil.createVareId(fakturautsteder, product)));
+            fakturautsteder.addVare(Link.with(VareResource.class, "systemid", SellerUtil.createVareId(fakturautsteder, product)));
         }
 
         return fakturautsteder;
