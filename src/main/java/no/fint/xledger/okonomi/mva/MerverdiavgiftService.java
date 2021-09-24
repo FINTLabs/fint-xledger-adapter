@@ -25,7 +25,7 @@ public class MerverdiavgiftService {
         this.mapper = mvaFactory;
     }
 
-    @Scheduled(initialDelay = 9000, fixedDelayString = "${fint.xledger.kodeverk.refresh-interval:1500000}")
+    @Scheduled(initialDelay = 8000, fixedDelayString = "${fint.xledger.kodeverk.refresh-interval:1500000}")
     public void refresh() {
         log.info("Refreshing Merverdiavgift...");
         mva = cache.get()

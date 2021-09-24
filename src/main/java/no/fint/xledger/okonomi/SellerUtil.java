@@ -4,6 +4,7 @@ import no.fint.model.resource.okonomi.faktura.FakturautstederResource;
 import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
 import no.fint.xledger.model.contacts.Contact;
 import no.fint.xledger.model.objectValues.Node;
+import org.springframework.util.StringUtils;
 
 /***
  * To be able to seperate each seller/contact in a school.
@@ -15,7 +16,12 @@ public class SellerUtil {
     }
 
     public static String createFakturautstederName(SkoleResource skoleResource, Contact contact) {
-        return skoleResource.getNavn() + " - " + contact.getName();
+        String telefonnummer = "";
+        if (skoleResource.getKontaktinformasjon() != null && StringUtils.hasText(skoleResource.getKontaktinformasjon().getTelefonnummer())) {
+            telefonnummer = " Tlf: " + skoleResource.getKontaktinformasjon().getTelefonnummer();
+        }
+
+        return skoleResource.getNavn() + " - " + contact.getName() + telefonnummer;
     }
 
     public static String extractSalgsordregruppeDbId(String fakturautstederCombinedId) {
