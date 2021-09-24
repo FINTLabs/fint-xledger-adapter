@@ -23,4 +23,13 @@ public class ConfigProperties {
     @Getter
     @Setter
     private String ownerDbId;
+
+    @Getter
+    @Setter
+    private int invoiceLayoutDbId;
+
+    @Getter
+    @Setter
+    private String currencyDbId;
+
 }

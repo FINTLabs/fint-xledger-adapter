@@ -60,11 +60,11 @@ public class InvoiceBaseItemDTO {
 
     @Getter
     @Setter
-    private int ownerDbId;
+    private String ownerDbId;
 
     @Getter
     @Setter
-    private int fieldGroupDbId;
+    private String fieldGroupDbId;
 
     @Getter
     @Setter

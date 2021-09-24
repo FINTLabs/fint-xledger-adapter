@@ -7,12 +7,12 @@ public @Data class Node{
 	private String unit;
 	private GlObject5 glObject5;
 	private String code;
-	private Object glObject4;
+	private GlObject4 glObject4;
 	private int dbId;
 	private String salesPrice;
 	private String description;
 	private GlObject3 glObject3;
 	private TaxRule taxRule;
-	private Object glObject2;
+	private GlObject2 glObject2;
 	private GlObject1 glObject1;
 }

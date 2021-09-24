@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.fint.model.resource.Link;
 import no.fint.model.resource.administrasjon.personal.PersonalressursResource;
 import no.fint.model.resource.felles.PersonResource;
+import no.fint.model.resource.okonomi.faktura.FakturautstederResource;
 import no.fint.model.resource.okonomi.kodeverk.VareResource;
 import no.fint.model.resource.utdanning.elev.SkoleressursResource;
 import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
@@ -87,5 +88,9 @@ public class FintRepository {
 
     public VareResource getVare(String orgId, List<Link> vare) {
         return resolverService.resolve(orgId, resolveLink(vare), VareResource.class);
+    }
+
+    public FakturautstederResource getFakturautsteder(String orgId, List<Link> links) {
+        return resolverService.resolve(orgId, resolveLink(links), FakturautstederResource.class);
     }
 }
