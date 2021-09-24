@@ -6,7 +6,7 @@ import no.fint.model.resource.okonomi.faktura.FakturautstederResource;
 import no.fint.model.resource.okonomi.kodeverk.VareResource;
 import no.fint.xledger.graphql.caches.ProductCache;
 import no.fint.xledger.graphql.caches.SalgsordregruppeCache;
-import no.fint.xledger.model.Node;
+import no.fint.xledger.model.product.Node;
 import no.fint.xledger.okonomi.SellerUtil;
 import no.fint.xledger.okonomi.fakturautsteder.FakturautstederService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service

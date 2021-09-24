@@ -2,7 +2,7 @@ package no.fint.xledger.graphql.caches;
 
 import lombok.extern.slf4j.Slf4j;
 import no.fint.xledger.graphql.ProductRepository;
-import no.fint.xledger.model.Node;
+import no.fint.xledger.model.product.Node;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -33,7 +33,7 @@ public class ProductCache extends Cache<Node> {
     }
 
     public Node filterVarerByDbId(String productDbId) {
-        List<no.fint.xledger.model.Node> rows = get().stream().filter(n -> String.valueOf(n.getDbId()).equals(productDbId)).collect(Collectors.toList());
+        List<Node> rows = get().stream().filter(n -> String.valueOf(n.getDbId()).equals(productDbId)).collect(Collectors.toList());
         if (rows.size() == 0) return null;
         if (rows.size() > 1) log.warn("Multiple products with dbId=" + productDbId);
         return rows.get(0);

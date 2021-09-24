@@ -4,15 +4,12 @@ import no.fint.model.resource.okonomi.faktura.FakturalinjeResource;
 import no.fint.model.resource.okonomi.kodeverk.VareResource;
 import no.fint.xledger.fintclient.FintRepository;
 import no.fint.xledger.graphql.caches.ProductCache;
-import no.fint.xledger.model.Node;
+import no.fint.xledger.model.product.Node;
 import no.fint.xledger.model.invoiceBaseItem.InvoiceBaseItemDTO;
 import no.fint.xledger.okonomi.ConfigProperties;
 import no.fint.xledger.okonomi.SellerUtil;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class FakturagrunnlagMapper {

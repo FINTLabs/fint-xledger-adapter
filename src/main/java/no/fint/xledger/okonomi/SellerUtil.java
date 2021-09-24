@@ -28,7 +28,7 @@ public class SellerUtil {
         return fakturautstederCombinedId.substring(0, end);
     }
 
-    public static String createVareId(FakturautstederResource fakturautstederResource, no.fint.xledger.model.Node vare) {
+    public static String createVareId(FakturautstederResource fakturautstederResource, no.fint.xledger.model.product.Node vare) {
         return createVareId(fakturautstederResource.getSystemId().getIdentifikatorverdi(), vare.getDbId());
     }
 

@@ -1,4 +1,4 @@
-package no.fint.xledger.model;
+package no.fint.xledger.model.product;
 
 import java.util.List;
 import lombok.Data;

@@ -1,11 +1,10 @@
 package no.fint.xledger.graphql;
 
 import lombok.extern.slf4j.Slf4j;
-import no.fint.xledger.model.EdgesItem;
-import no.fint.xledger.model.GraphQlResponse;
-import no.fint.xledger.model.Node;
+import no.fint.xledger.model.product.EdgesItem;
+import no.fint.xledger.model.product.GraphQlResponse;
+import no.fint.xledger.model.product.Node;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -67,6 +66,26 @@ public class ProductRepository {
                 "        taxRule {\n" +
                 "          code\n" +
                 "        }\n" +
+                "        glObject1 {\n" +
+                "          dbId\n" +
+                "          description\n" +
+                "        }\n" +
+                "        glObject2 {\n" +
+                "          dbId\n" +
+                "          description\n" +
+                "        }\n" +
+                "        glObject3 {\n" +
+                "          dbId\n" +
+                "          description\n" +
+                "        }\n" +
+                "        glObject4 {\n" +
+                "          dbId\n" +
+                "          description\n" +
+                "        }\n" +
+                "        glObject5 {\n" +
+                "          dbId\n" +
+                "          description\n" +
+                "        }\n" +
                 "      }\n" +
                 "      cursor\n" +
                 "    }\n" +
@@ -90,6 +109,26 @@ public class ProductRepository {
                 "        code\n" +
                 "        taxRule {\n" +
                 "          code\n" +
+                "        }\n" +
+                "        glObject1 {\n" +
+                "          dbId\n" +
+                "          description\n" +
+                "        }\n" +
+                "        glObject2 {\n" +
+                "          dbId\n" +
+                "          description\n" +
+                "        }\n" +
+                "        glObject3 {\n" +
+                "          dbId\n" +
+                "          description\n" +
+                "        }\n" +
+                "        glObject4 {\n" +
+                "          dbId\n" +
+                "          description\n" +
+                "        }\n" +
+                "        glObject5 {\n" +
+                "          dbId\n" +
+                "          description\n" +
                 "        }\n" +
                 "      }\n" +
                 "      cursor\n" +

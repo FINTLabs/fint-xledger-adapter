@@ -6,7 +6,7 @@ import no.fint.model.resource.okonomi.faktura.FakturautstederResource;
 import no.fint.model.resource.okonomi.kodeverk.MerverdiavgiftResource;
 import no.fint.model.resource.okonomi.kodeverk.VareResource;
 import no.fint.xledger.graphql.caches.MerverdiavgiftCache;
-import no.fint.xledger.model.Node;
+import no.fint.xledger.model.product.Node;
 import no.fint.xledger.okonomi.SellerUtil;
 import no.fint.xledger.utilities.ConvertUtilities;
 import org.springframework.beans.factory.annotation.Autowired;
