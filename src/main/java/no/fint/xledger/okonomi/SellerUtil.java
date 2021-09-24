@@ -40,4 +40,13 @@ public class SellerUtil {
 
         return fakturautstederId + "_" + vareId;
     }
+
+    public static String extractProductDbId(String productCombinedId) {
+        if (productCombinedId == null || productCombinedId.length() == 0)
+            throw new IllegalArgumentException("combindedId could not be empty");
+        if (!productCombinedId.contains("_"))
+            throw new IllegalArgumentException("combindedId should contain a _");
+
+        return productCombinedId.substring(productCombinedId.indexOf("_") + 1);
+    }
 }

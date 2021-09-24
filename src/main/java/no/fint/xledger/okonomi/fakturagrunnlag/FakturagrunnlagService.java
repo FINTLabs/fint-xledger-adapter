@@ -5,7 +5,9 @@ import no.fint.model.resource.okonomi.faktura.FakturalinjeResource;
 import no.fint.model.resource.okonomi.faktura.FakturautstederResource;
 import no.fint.model.resource.okonomi.kodeverk.MerverdiavgiftResource;
 import no.fint.model.resource.okonomi.kodeverk.VareResource;
+import no.fint.xledger.fintclient.FintRepository;
 import no.fint.xledger.graphql.InvoiceBaseItemRepository;
+import no.fint.xledger.okonomi.ConfigProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,15 +22,24 @@ public class FakturagrunnlagService {
     @Autowired
     private CustomerService customerService;
 
+    @Autowired
+    private FakturagrunnlagMapper mapper;
+
     public FakturagrunnlagService(InvoiceBaseItemRepository invoiceBaseItemRepository) {
         this.invoiceBaseItemRepository = invoiceBaseItemRepository;
     }
 
-    public void addFakturagrunnlag(FakturagrunnlagResource fakturagrunnlagResource) {
+    public void addFakturagrunnlag(FakturagrunnlagResource fakturagrunnlagResource) throws Exception {
 
-/*        int subledgerDbId = customerService.createOrUpdate(fakturagrunnlagResource.getMottaker().getPerson());
+        int subledgerDbId = customerService.createOrUpdate(fakturagrunnlagResource.getMottaker().getPerson());
+        if (subledgerDbId == 0) throw new Exception("subledgerDbID = 0. Customer create/update has failed");
 
-        Order order = createOrder(fakturagrunnlag);
+        for (FakturalinjeResource linje : fakturagrunnlagResource.getFakturalinjer()){
+            invoiceBaseItemRepository.add(mapper.toXledger(linje, subledgerDbId));
+
+        }
+
+/*      Order order = createOrder(fakturagrunnlag);
 
         order.setOrderLines(
                 fakturagrunnlag.getFakturalinjer().stream().map(fakturalinje -> {
