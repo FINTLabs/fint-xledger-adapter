@@ -24,6 +24,8 @@ public class GetAllMerverdiavgiftHandler implements Handler {
 
     @Override
     public void accept(Event<FintLinks> response) {
+        if (merverdiavgiftService.getMva() == null) merverdiavgiftService.refresh();
+
         merverdiavgiftService.getMva().forEach(response::addData);
         response.setResponseStatus(ResponseStatus.ACCEPTED);
     }

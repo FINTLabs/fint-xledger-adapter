@@ -22,6 +22,8 @@ public class GetAllFakturautstederHandler implements Handler {
 
     @Override
     public void accept(Event<FintLinks> response) {
+        if (fakturautstederService.getFakturautstedere() == null) fakturautstederService.refresh();
+
         fakturautstederService.getFakturautstedere().forEach(response::addData);
         response.setResponseStatus(ResponseStatus.ACCEPTED);
     }

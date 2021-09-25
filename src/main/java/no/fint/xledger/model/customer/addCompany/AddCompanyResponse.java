@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import no.fint.xledger.model.customer.companies.Companies;
 
-public @Data class GraphQLResponse{
+public @Data class AddCompanyResponse {
 	@JsonProperty("data")
 	private no.fint.xledger.model.customer.addCompany.AddCompany addCompany;
 

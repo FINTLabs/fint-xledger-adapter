@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 
-public @Data class GraphQlResponse {
+public @Data class ContactResponse {
 	@JsonProperty("data")
-	private GraphQlResponse.Result result;
+	private ContactResponse.Result result;
 
 	@Data
 	public static class Result {

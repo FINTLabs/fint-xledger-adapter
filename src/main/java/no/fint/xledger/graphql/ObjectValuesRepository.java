@@ -2,7 +2,7 @@ package no.fint.xledger.graphql;
 
 import lombok.extern.slf4j.Slf4j;
 import no.fint.xledger.model.objectValues.EdgesItem;
-import no.fint.xledger.model.objectValues.GraphQLResponse;
+import no.fint.xledger.model.objectValues.ObjectValuesResponse;
 import no.fint.xledger.model.objectValues.Node;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
@@ -30,8 +30,8 @@ public class ObjectValuesRepository {
         List<Node> mvaLines = new ArrayList<>();
 
         do {
-            GraphQLResponse graphQLData = xledgerWebClient
-                    .post(GraphQLResponse.class, query)
+            ObjectValuesResponse graphQLData = xledgerWebClient
+                    .post(ObjectValuesResponse.class, query)
                     .block();
             List<EdgesItem> edges = Objects.requireNonNull(graphQLData).getResult().getObjectValues().getEdges();
 

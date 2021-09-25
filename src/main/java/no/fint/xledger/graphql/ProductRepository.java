@@ -2,7 +2,7 @@ package no.fint.xledger.graphql;
 
 import lombok.extern.slf4j.Slf4j;
 import no.fint.xledger.model.product.EdgesItem;
-import no.fint.xledger.model.product.GraphQlResponse;
+import no.fint.xledger.model.product.ProductResponse;
 import no.fint.xledger.model.product.Node;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
@@ -30,8 +30,8 @@ public class ProductRepository {
         List<Node> products = new ArrayList<>();
 
         do {
-            GraphQlResponse graphQLData = xledgerWebClient
-                    .post(GraphQlResponse.class, query)
+            ProductResponse graphQLData = xledgerWebClient
+                    .post(ProductResponse.class, query)
                     .block();
             List<EdgesItem> edges = Objects.requireNonNull(graphQLData).getResult().getProducts().getEdges();
 

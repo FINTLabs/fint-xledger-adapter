@@ -2,7 +2,7 @@ package no.fint.xledger.graphql;
 
 import lombok.extern.slf4j.Slf4j;
 import no.fint.xledger.model.invoiceBaseItem.InvoiceBaseItemDTO;
-import no.fint.xledger.model.objectValues.GraphQLResponse;
+import no.fint.xledger.model.objectValues.ObjectValuesResponse;
 import org.springframework.stereotype.Repository;
 
 @Slf4j
@@ -17,8 +17,8 @@ public class InvoiceBaseItemRepository extends GraphQLRepository {
     public void add(InvoiceBaseItemDTO invoiceItem) {
         GraphQLQuery query = getQuery(invoiceItem);
 
-        GraphQLResponse graphQLData = xledgerWebClient
-                .post(GraphQLResponse.class, query)
+        ObjectValuesResponse graphQLData = xledgerWebClient
+                .post(ObjectValuesResponse.class, query)
                 .block();
 
         //mvaLines.addAll(graphQLData

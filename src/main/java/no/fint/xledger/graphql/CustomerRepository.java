@@ -2,6 +2,8 @@ package no.fint.xledger.graphql;
 
 import lombok.extern.slf4j.Slf4j;
 import no.fint.xledger.model.customer.CustomerDTO;
+import no.fint.xledger.model.customer.addCompany.AddCompanyResponse;
+import no.fint.xledger.model.customer.companies.CompaniesResponse;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -17,7 +19,7 @@ public class CustomerRepository extends GraphQLRepository {
 
     public int getCompanyDbId(String fodselsnummer) {
         GraphQLQuery query = getCompaniesQuery(fodselsnummer);
-        no.fint.xledger.model.customer.companies.GraphQLResponse graphQLData = xledgerWebClient.post(no.fint.xledger.model.customer.companies.GraphQLResponse.class, query).block();
+        CompaniesResponse graphQLData = xledgerWebClient.post(CompaniesResponse.class, query).block();
 
         List<no.fint.xledger.model.customer.companies.EdgesItem> edgesItems = graphQLData.getCompanies().getEdges();
         if (edgesItems == null || edgesItems.size() == 0) return 0;
@@ -31,7 +33,7 @@ public class CustomerRepository extends GraphQLRepository {
 
     public int addCompany(String companyNumber, String ownerDbId) {
         GraphQLQuery query = addCompanyQuery(companyNumber, ownerDbId);
-        no.fint.xledger.model.customer.addCompany.GraphQLResponse graphQLData = xledgerWebClient.post(no.fint.xledger.model.customer.addCompany.GraphQLResponse.class, query).block();
+        AddCompanyResponse graphQLData = xledgerWebClient.post(AddCompanyResponse.class, query).block();
         return graphQLData.getAddCompany().getDbId();
     }
 

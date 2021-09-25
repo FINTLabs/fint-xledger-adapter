@@ -2,7 +2,7 @@ package no.fint.xledger.graphql;
 
 import lombok.extern.slf4j.Slf4j;
 import no.fint.xledger.model.contacts.EdgesItem;
-import no.fint.xledger.model.contacts.GraphQlResponse;
+import no.fint.xledger.model.contacts.ContactResponse;
 import no.fint.xledger.model.contacts.Node;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
@@ -31,8 +31,8 @@ public class ContactRepository {
         List<Node> products = new ArrayList<>();
 
         do {
-            GraphQlResponse graphQLData = xledgerWebClient
-                    .post(GraphQlResponse.class, query)
+            ContactResponse graphQLData = xledgerWebClient
+                    .post(ContactResponse.class, query)
                     .block();
             List<EdgesItem> edges = Objects.requireNonNull(graphQLData).getResult().getEntityContacts().getEdges();
 
