@@ -24,8 +24,9 @@ public class CustomerMapper {
         if (kontaktinformasjon != null) {
             customer.setEmail(kontaktinformasjon.getEpostadresse());
             customer.setPhone(
-                    StringUtils.hasText(kontaktinformasjon.getMobiltelefonnummer()) ?
-                            kontaktinformasjon.getMobiltelefonnummer() : kontaktinformasjon.getTelefonnummer()
+                    StringUtils.hasText(kontaktinformasjon.getMobiltelefonnummer())
+                            ? kontaktinformasjon.getMobiltelefonnummer()
+                            : kontaktinformasjon.getTelefonnummer()
             );
         }
 
