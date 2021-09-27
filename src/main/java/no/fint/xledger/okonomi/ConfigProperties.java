@@ -40,4 +40,8 @@ public class ConfigProperties {
     @Getter
     @Setter
     private String currencyDbId;
+
+    @Getter
+    @Setter
+    private int digistToCompareSalgsordregruppeAndProduct;
 }

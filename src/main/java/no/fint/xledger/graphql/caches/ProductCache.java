@@ -3,6 +3,7 @@ package no.fint.xledger.graphql.caches;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.xledger.graphql.ProductRepository;
 import no.fint.xledger.model.product.Node;
+import no.fint.xledger.okonomi.ConfigProperties;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -15,7 +16,7 @@ public class ProductCache extends Cache<Node> {
 
     private final ProductRepository repository;
 
-    public ProductCache(ProductRepository repository) {
+    public ProductCache(ProductRepository repository, ConfigProperties configProperties) {
         super(Duration.ofDays(1));
         this.repository = repository;
     }
@@ -25,10 +26,17 @@ public class ProductCache extends Cache<Node> {
         return repository.queryProducts();
     }
 
-    public List<Node> filterVarerByCode(String startsWith) {
+    public List<Node> filterVarerByCode(String startsWith, int digistToCompare) {
+
+        if (digistToCompare != 0 && startsWith.length() > digistToCompare) {
+            startsWith = startsWith.substring(0, digistToCompare);
+        }
+
+        String finalStartsWith = startsWith;
+
         return get()
                 .stream()
-                .filter(v -> v.getCode().startsWith(startsWith))
+                .filter(v -> v.getCode().startsWith(finalStartsWith))
                 .collect(Collectors.toList());
     }
 

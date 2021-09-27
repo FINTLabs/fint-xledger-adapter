@@ -9,6 +9,7 @@ import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
 import no.fint.xledger.graphql.caches.ProductCache;
 import no.fint.xledger.model.contacts.Contact;
 import no.fint.xledger.model.objectValues.Node;
+import no.fint.xledger.okonomi.ConfigProperties;
 import no.fint.xledger.okonomi.SellerUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,8 +20,11 @@ public class FakturautstederMapper {
     @Autowired
     private final ProductCache products;
 
-    public FakturautstederMapper(ProductCache products) {
+    private  final ConfigProperties configProperties;
+
+    public FakturautstederMapper(ProductCache products, ConfigProperties configProperties) {
         this.products = products;
+        this.configProperties = configProperties;
     }
 
     public FakturautstederResource toFint(Node salgsordregruppe, SkoleResource skoleResource, Contact contact, String organisasjonsnummer) {
@@ -34,7 +38,7 @@ public class FakturautstederMapper {
 
         fakturautsteder.addOrganisasjonselement(Link.with(OrganisasjonselementResource.class, "organisasjonsnummer", organisasjonsnummer));
 
-        for (no.fint.xledger.model.product.Node product : products.filterVarerByCode(salgsordregruppe.getCode())) {
+        for (no.fint.xledger.model.product.Node product : products.filterVarerByCode(salgsordregruppe.getCode(), configProperties.getDigistToCompareSalgsordregruppeAndProduct())) {
             fakturautsteder.addVare(Link.with(VareResource.class, "systemid", SellerUtil.createVareId(fakturautsteder, product)));
         }
 
