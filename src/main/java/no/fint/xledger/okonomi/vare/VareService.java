@@ -2,125 +2,64 @@ package no.fint.xledger.okonomi.vare;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import no.fint.model.resource.okonomi.faktura.FakturautstederResource;
 import no.fint.model.resource.okonomi.kodeverk.VareResource;
-import no.fint.xledger.graphql.GraphQLQuery;
-import no.fint.xledger.graphql.XledgerWebClientRepository;
-import no.fint.xledger.model.EdgesItem;
-import no.fint.xledger.model.GraphQlResponse;
-import no.fint.xledger.model.Node;
-import org.springframework.beans.factory.annotation.Value;
+import no.fint.xledger.graphql.caches.ProductCache;
+import no.fint.xledger.graphql.caches.SalgsordregruppeCache;
+import no.fint.xledger.model.product.Node;
+import no.fint.xledger.okonomi.SellerUtil;
+import no.fint.xledger.okonomi.fakturautsteder.FakturautstederService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 public class VareService {
 
-    @Value("${fint.xledger.graphql.pageSize:500}")
-    private int pageSize;
+    private final ProductCache cache;
+    private final VareMapper mapper;
 
-    private final XledgerWebClientRepository xledgerWebClientRepository;
-    private final VareFactory vareFactory;
+    @Autowired
+    private FakturautstederService fakturautstederService;
+
+    @Autowired
+    private SalgsordregruppeCache salgsordregruppeCache;
 
     @Getter
     private List<VareResource> varer;
 
-
-    public VareService(XledgerWebClientRepository xledgerWebClientRepository, VareFactory vareFactory) {
-        this.xledgerWebClientRepository = xledgerWebClientRepository;
-        this.vareFactory = vareFactory;
+    public VareService(ProductCache cache, VareMapper vareMapper, FakturautstederService fakturautstederService, SalgsordregruppeCache salgsordregruppeCache) {
+        this.cache = cache;
+        this.mapper = vareMapper;
+        this.fakturautstederService = fakturautstederService;
+        this.salgsordregruppeCache = salgsordregruppeCache;
     }
 
     @Scheduled(initialDelay = 10000, fixedDelayString = "${fint.xledger.kodeverk.refresh-interval:1500000}")
     public void refresh() {
         log.info("Refreshing Vare...");
-        varer = queryProducts()
-                .stream()
-                .map(vareFactory::toFint)
-                .collect(Collectors.toList());
+
+        varer = new ArrayList<>();
+
+        for (FakturautstederResource fakturautsteder : fakturautstederService.getFakturautstedere()) {
+            // Filtere pr fakturautsteder
+            // Vare."code": "500100-1011",
+
+            String salgsordregruppeDbId = SellerUtil.extractSalgsordregruppeDbId(fakturautsteder.getSystemId().getIdentifikatorverdi());
+            String salgsordregruppeCode = salgsordregruppeCache.getCodeByDbId(salgsordregruppeDbId);
+
+            for (Node vare : cache.filterVarerByCode(salgsordregruppeCode)) {
+                varer.add(mapper.toFint(vare, fakturautsteder));
+            }
+        }
+
+        log.info("Found " + varer.size() + " varer");
         log.info("End refreshing Vare");
     }
 
-    public List<Node> queryProducts() {
-        GraphQLQuery query = getQuery();
-        boolean hasNext;
-        List<Node> products = new ArrayList<>();
 
-
-        do {
-            GraphQlResponse graphQLData = xledgerWebClientRepository
-                    .post(GraphQlResponse.class, query)
-                    .block();
-            List<EdgesItem> edges = Objects.requireNonNull(graphQLData).getResult().getProducts().getEdges();
-
-            hasNext = Objects.requireNonNull(graphQLData).getResult().getProducts().getPageInfo().isHasNextPage();
-            query = getCursorQuery(edges.get(edges.size() - 1).getCursor());
-
-            products.addAll(graphQLData
-                    .getResult()
-                    .getProducts()
-                    .getEdges()
-                    .stream().map(EdgesItem::getNode)
-                    .collect(Collectors.toList()));
-
-        } while (hasNext);
-
-
-        log.info("Found {} products", products.size());
-        return products;
-
-    }
-
-    private GraphQLQuery getCursorQuery(String cursor) {
-        return new GraphQLQuery(String.format("{\n" +
-                "  products(first: %d, after: \"%s\") {\n" +
-                "    edges {\n" +
-                "      node {\n" +
-                "        dbId\n" +
-                "        unit\n" +
-                "        salesPrice\n" +
-                "        createdAt\n" +
-                "        description\n" +
-                "        code\n" +
-                "        taxRule {\n" +
-                "          code\n" +
-                "        }\n" +
-                "      }\n" +
-                "      cursor\n" +
-                "    }\n" +
-                "    pageInfo {\n" +
-                "      hasNextPage\n" +
-                "    }\n" +
-                "  }\n" +
-                "}", pageSize, cursor));
-    }
-
-    private GraphQLQuery getQuery() {
-        return new GraphQLQuery(String.format("{\n" +
-                "  products(first: %d) {\n" +
-                "    edges {\n" +
-                "      node {\n" +
-                "        dbId\n" +
-                "        unit\n" +
-                "        salesPrice\n" +
-                "        createdAt\n" +
-                "        description\n" +
-                "        code\n" +
-                "        taxRule {\n" +
-                "          code\n" +
-                "        }\n" +
-                "      }\n" +
-                "      cursor\n" +
-                "    }\n" +
-                "    pageInfo {\n" +
-                "      hasNextPage\n" +
-                "    }\n" +
-                "  }\n" +
-                "}", pageSize));
-    }
 }

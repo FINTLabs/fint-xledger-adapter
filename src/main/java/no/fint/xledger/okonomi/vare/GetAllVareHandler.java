@@ -5,6 +5,7 @@ import no.fint.event.model.ResponseStatus;
 import no.fint.model.okonomi.kodeverk.KodeverkActions;
 import no.fint.model.resource.FintLinks;
 import no.fint.xledger.handler.Handler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -13,6 +14,7 @@ import java.util.Set;
 @Service
 public class GetAllVareHandler implements Handler {
 
+    @Autowired
     private final VareService vareService;
 
     public GetAllVareHandler(VareService vareService) {
@@ -21,6 +23,8 @@ public class GetAllVareHandler implements Handler {
 
     @Override
     public void accept(Event<FintLinks> response) {
+        if (vareService.getVarer() == null) vareService.refresh();
+
         vareService.getVarer().forEach(response::addData);
         response.setResponseStatus(ResponseStatus.ACCEPTED);
     }
