@@ -1,5 +1,6 @@
 package no.fint.xledger.okonomi.fakturagrunnlag;
 
+import no.fint.model.felles.kompleksedatatyper.Kontaktinformasjon;
 import no.fint.model.felles.kompleksedatatyper.Personnavn;
 import no.fint.model.resource.felles.PersonResource;
 import no.fint.model.resource.felles.kompleksedatatyper.AdresseResource;
@@ -19,10 +20,13 @@ public class CustomerMapper {
         customer.setCompanyDbId(companyDbId);
         customer.setCompanyNumber(person.getFodselsnummer().getIdentifikatorverdi());
 
-        if (person.getKontaktinformasjon() != null) {
-            customer.setEmail(person.getKontaktinformasjon().getEpostadresse());
-            customer.setPhone(person.getKontaktinformasjon().getMobiltelefonnummer());
-            // TODO Bruk telefonnummer hvis ikke den har mobiltelefonnummer
+        Kontaktinformasjon kontaktinformasjon = person.getKontaktinformasjon();
+        if (kontaktinformasjon != null) {
+            customer.setEmail(kontaktinformasjon.getEpostadresse());
+            customer.setPhone(
+                    StringUtils.hasText(kontaktinformasjon.getMobiltelefonnummer()) ?
+                            kontaktinformasjon.getMobiltelefonnummer() : kontaktinformasjon.getTelefonnummer()
+            );
         }
 
         Stream.of(person.getPostadresse(), person.getBostedsadresse())
@@ -52,7 +56,7 @@ public class CustomerMapper {
         if (adresse.getAdresselinje() == null || adresse.getAdresselinje().size() == 0) return null;
 
         StringBuilder output = new StringBuilder();
-        for (String line : adresse.getAdresselinje()){
+        for (String line : adresse.getAdresselinje()) {
             output.append(line + "\n");
         }
 
