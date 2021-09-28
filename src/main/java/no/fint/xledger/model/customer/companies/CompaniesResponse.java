@@ -6,7 +6,7 @@ import lombok.Data;
 public @Data class CompaniesResponse {
 
 	@JsonProperty("data")
-	private no.fint.xledger.model.customer.companies.Companies companies;
+	private CompaniesResponse.Result result;
 
 	@Data
 	public static class Result {

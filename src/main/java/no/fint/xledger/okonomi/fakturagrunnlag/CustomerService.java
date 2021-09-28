@@ -25,7 +25,7 @@ public class CustomerService {
     @Autowired
     private CustomerMapper mapper;
 
-    public int createOrUpdate(List<Link> personLinks) {
+    public int createOrUpdate(List<Link> personLinks) throws Exception {
         PersonResource person = fintRepository.getPerson(configProperties.getOrganization(), personLinks);
         int companyDbId = customerRepository.getCompanyDbId(person.getFodselsnummer().getIdentifikatorverdi());
 
@@ -34,6 +34,7 @@ public class CustomerService {
         if (companyDbId == 0) {
             // add person
             companyDbId = customerRepository.addCompany(person.getFodselsnummer().getIdentifikatorverdi(), configProperties.getOwnerDbId());
+            if (companyDbId == 0) throw new Exception("companyDbId should not be 0");
             customerDbId = customerRepository.addCustomer(mapper.toXledger(person, companyDbId));
         } else {
             // update person

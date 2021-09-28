@@ -21,7 +21,7 @@ public class CustomerRepository extends GraphQLRepository {
         GraphQLQuery query = getCompaniesQuery(fodselsnummer);
         CompaniesResponse graphQLData = xledgerWebClient.post(CompaniesResponse.class, query).block();
 
-        List<no.fint.xledger.model.customer.companies.EdgesItem> edgesItems = graphQLData.getCompanies().getEdges();
+        List<no.fint.xledger.model.customer.companies.EdgesItem> edgesItems = graphQLData.getResult().getCompanies().getEdges();
         if (edgesItems == null || edgesItems.size() == 0) return 0;
 
         if (edgesItems.size() > 1) {
@@ -34,7 +34,7 @@ public class CustomerRepository extends GraphQLRepository {
     public int addCompany(String companyNumber, String ownerDbId) {
         GraphQLQuery query = addCompanyQuery(companyNumber, ownerDbId);
         AddCompanyResponse graphQLData = xledgerWebClient.post(AddCompanyResponse.class, query).block();
-        return graphQLData.getAddCompany().getDbId();
+        return graphQLData.getResult().getAddCompany().getDbId();
     }
 
     public int getCustomerDbId(String companyDbId) {

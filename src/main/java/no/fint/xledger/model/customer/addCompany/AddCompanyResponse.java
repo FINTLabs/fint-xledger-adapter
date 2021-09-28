@@ -6,7 +6,7 @@ import no.fint.xledger.model.customer.companies.Companies;
 
 public @Data class AddCompanyResponse {
 	@JsonProperty("data")
-	private no.fint.xledger.model.customer.addCompany.AddCompany addCompany;
+	private AddCompanyResponse.Result result;
 
 	@Data
 	public static class Result {
