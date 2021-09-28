@@ -45,11 +45,11 @@ public class InvoiceBaseItemRepository extends GraphQLRepository {
                         "ourRefDbId: %d,\n" +
                         "headerInfo: %s,\n" +
                         "approved: true,\n" +
-                        "extOrder: %d,\n" +
+                        "extOrder: %s,\n" +
                         "invoiceLayoutDbId: %d,\n" +
                         "currencyDbId: %s,\n" +
-                        "ownerDbId: %d,\n" +
-                        "fieldGroupDbId: %d,\n" +
+                        "ownerDbId: %s,\n" +
+                        "fieldGroupDbId: %s,\n" +
                         "unitPrice: %f,\n" +
                         "quantity: %f,\n" +
                         "lineNumber: %d" +

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.Set;
-
+/*
 @Service
 public class GetFakturagrunnlagHandler implements Handler {
     @Override
@@ -21,3 +21,4 @@ public class GetFakturagrunnlagHandler implements Handler {
         return Collections.singleton(FakturaActions.GET_FAKTURAGRUNNLAG.name());
     }
 }
+*/

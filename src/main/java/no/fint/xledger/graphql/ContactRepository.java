@@ -53,6 +53,32 @@ public class ContactRepository {
         return products;
     }
 
+    // TODO Samme kontakt forekommer 2 ganger:
+    /*{
+        "node": {
+        "contact": {
+            "dbId": "698708",
+                    "code": "966822",
+                    "name": "Jan Ragnar Finsland",
+                    "phone": null,
+                    "email": "Jan.Ragnar.Finsland@agderfk.no"
+        }
+    },
+        "cursor": "109349000000467.109349000000469.109349000000470"
+    },
+    {
+        "node": {
+        "contact": {
+            "dbId": "698482",
+                    "code": "964780",
+                    "name": "Ellen Hilde Jakobsen",
+                    "phone": null,
+                    "email": "Ellen.Hilde.Jakobsen@tangen.vgs.no"
+        }
+    },
+        "cursor": "109349000000466.109349000000467.109349000000469"
+    },*/
+
     private GraphQLQuery getCursorQuery(String cursor) {
         return new GraphQLQuery(String.format("{\n" +
                 "  entityContacts(first: %d, after: \"%s\") {\n" +

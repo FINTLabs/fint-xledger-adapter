@@ -12,12 +12,10 @@ import no.fint.model.resource.FintLinks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Set;
+import javax.annotation.PostConstruct;
+import java.util.*;
+import java.util.stream.Collectors;
 
-/*
 @Slf4j
 @Service
 public class UpdateFakturagrunnlagHandler implements Handler {
@@ -32,6 +30,12 @@ public class UpdateFakturagrunnlagHandler implements Handler {
     List<Processor<FakturagrunnlagResource>> processors;
 
     EnumMap<Operation, Processor<FakturagrunnlagResource>> processorMap;
+
+    @PostConstruct
+    public void init() {
+        processorMap = new EnumMap<>(Operation.class);
+        processors.forEach(p -> processorMap.put(p.operation(), p));
+    }
 
     @Override
     public void accept(Event<FintLinks> response) {
@@ -60,4 +64,4 @@ public class UpdateFakturagrunnlagHandler implements Handler {
     public Set<String> actions() {
         return Collections.singleton(FakturaActions.UPDATE_FAKTURAGRUNNLAG.name());
     }
-}*/
+}
