@@ -110,7 +110,7 @@ public class EventHandlerService {
 
     @PostConstruct
     void init() {
-        executor = Executors.newSingleThreadExecutor(); // TODO Can we use more threads?
+        executor = Executors.newSingleThreadExecutor();
         actionsHandlerMap = new HashMap<>();
         handlers.forEach(h -> h.actions().forEach(a -> {
             actionsHandlerMap.put(a, h);

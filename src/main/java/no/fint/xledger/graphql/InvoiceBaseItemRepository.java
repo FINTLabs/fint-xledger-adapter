@@ -2,7 +2,7 @@ package no.fint.xledger.graphql;
 
 import lombok.extern.slf4j.Slf4j;
 import no.fint.xledger.model.invoiceBaseItem.InvoiceBaseItemDTO;
-import no.fint.xledger.model.objectValues.ObjectValuesResponse;
+import no.fint.xledger.model.invoiceBaseItem.addInvoiceBaseItem.AddInvoiceBaseItemResponse;
 import org.springframework.stereotype.Repository;
 
 @Slf4j
@@ -14,21 +14,26 @@ public class InvoiceBaseItemRepository extends GraphQLRepository {
         this.xledgerWebClient = xledgerWebClient;
     }
 
-    public void add(InvoiceBaseItemDTO invoiceItem) {
+    public String add(InvoiceBaseItemDTO invoiceItem) {
         GraphQLQuery query = getQuery(invoiceItem);
+        AddInvoiceBaseItemResponse graphQLData = xledgerWebClient.post(AddInvoiceBaseItemResponse.class, query).block();
 
-        ObjectValuesResponse graphQLData = xledgerWebClient
-                .post(ObjectValuesResponse.class, query)
-                .block();
+        try {
+            if (graphQLData == null)
+                return "not working, graphQLData == null";
+            if (graphQLData.getResult() == null)
+                return "not working, getResult == null";
+            if (graphQLData.getResult().getAddInvoiceBaseItem() == null)
+                return "not working, getAddInvoiceBaseItem == null";
+            if (graphQLData.getResult().getAddInvoiceBaseItem().getDbId() == null)
+                return "not working, getDbId == null";
 
-        //mvaLines.addAll(graphQLData
-        //        .getResult()
-        //        .getObjectValues()
-        //        .getEdges()
-        //        .stream().map(EdgesItem::getNode)
-        //        .collect(Collectors.toList()));
-
-        // TODO Handle respons from addInvoiceBaseItem
+            return "not-implemented";
+            //if (graphQLData == null) return "null";
+            //return graphQLData.getResult().getAddInvoiceBaseItem().getDbId();
+        } catch (Exception e) {
+            return e.getMessage();
+        }
     }
 
     private GraphQLQuery getQuery(InvoiceBaseItemDTO invoiceItem) {
