@@ -85,12 +85,4 @@ public class FintRepository {
     public PersonResource getPerson(String orgId, List<Link> links) {
         return resolverService.resolve(orgId, resolveLink(links), PersonResource.class);
     }
-
-    public VareResource getVare(String orgId, List<Link> vare) {
-        return resolverService.resolve(orgId, resolveLink(vare), VareResource.class);
-    }
-
-    public FakturautstederResource getFakturautsteder(String orgId, List<Link> links) {
-        return resolverService.resolve(orgId, resolveLink(links), FakturautstederResource.class);
-    }
 }

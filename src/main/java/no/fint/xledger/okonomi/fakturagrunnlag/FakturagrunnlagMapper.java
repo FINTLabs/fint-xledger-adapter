@@ -1,5 +1,6 @@
 package no.fint.xledger.okonomi.fakturagrunnlag;
 
+import no.fint.model.resource.Link;
 import no.fint.model.resource.okonomi.faktura.FakturagrunnlagResource;
 import no.fint.model.resource.okonomi.faktura.FakturalinjeResource;
 import no.fint.model.resource.okonomi.faktura.FakturautstederResource;
@@ -10,8 +11,12 @@ import no.fint.xledger.model.invoiceBaseItem.InvoiceBaseItemDTO;
 import no.fint.xledger.model.product.Node;
 import no.fint.xledger.okonomi.ConfigProperties;
 import no.fint.xledger.okonomi.SellerUtil;
+import no.fint.xledger.okonomi.vare.VareService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class FakturagrunnlagMapper {
@@ -25,11 +30,15 @@ public class FakturagrunnlagMapper {
     @Autowired
     private ProductCache productCache;
 
-    public InvoiceBaseItemDTO toXledger(FakturalinjeResource linje, int subledgerDbId, FakturautstederResource fakturautsteder, FakturagrunnlagResource fakturagrunnlag, int lineNumber) {
+    @Autowired
+    private VareService vareService;
+
+    public InvoiceBaseItemDTO toXledger(FakturalinjeResource linje, int subledgerDbId, FakturautstederResource fakturautsteder, FakturagrunnlagResource fakturagrunnlag, int lineNumber) throws Exception {
         InvoiceBaseItemDTO dto = new InvoiceBaseItemDTO();
         dto.setSubledgerDbId(String.valueOf(subledgerDbId));
 
-        VareResource vare = fintRepository.getVare(configProperties.getOrganization(), linje.getVare());
+        if (vareService.getVarer() == null) throw new Exception("Vare-cache ikke fylt.");
+        VareResource vare = getVare(linje.getVare());
         Node product = productCache.filterVarerByDbId(SellerUtil.extractProductDbId(vare.getSystemId().getIdentifikatorverdi()));
 
         dto.setProductDbId(String.valueOf(product.getDbId()));
@@ -48,11 +57,23 @@ public class FakturagrunnlagMapper {
         dto.setOwnerDbId(configProperties.getOwnerDbId());
         dto.setFieldGroupDbId(SellerUtil.extractSalgsordregruppeDbId(fakturautsteder.getSystemId().getIdentifikatorverdi()));
 
-        // TODO is this safe?
         dto.setUnitPrice((float) (linje.getPris() / 100.0));
         dto.setQuantity(linje.getAntall());
         dto.setLineNumber(lineNumber);
 
         return dto;
+    }
+
+    private VareResource getVare(List<Link> links) throws Exception {
+        String href = links.get(0).getHref();
+        String id = StringUtils.substringAfterLast(href, "/");
+        VareResource vare = vareService
+                .getVarer()
+                .stream()
+                .filter(f -> f.getSystemId().getIdentifikatorverdi().equals(id))
+                .findFirst()
+                .orElseThrow(Exception::new);
+        // todo better exception type/message
+        return vare;
     }
 }
