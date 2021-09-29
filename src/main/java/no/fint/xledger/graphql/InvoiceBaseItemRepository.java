@@ -5,6 +5,8 @@ import no.fint.xledger.model.invoiceBaseItem.InvoiceBaseItemDTO;
 import no.fint.xledger.model.invoiceBaseItem.addInvoiceBaseItem.AddInvoiceBaseItemResponse;
 import org.springframework.stereotype.Repository;
 
+import java.util.Locale;
+
 @Slf4j
 @Repository
 public class InvoiceBaseItemRepository extends GraphQLRepository {
@@ -18,6 +20,8 @@ public class InvoiceBaseItemRepository extends GraphQLRepository {
         GraphQLQuery query = getQuery(invoiceItem);
         AddInvoiceBaseItemResponse graphQLData = xledgerWebClient.post(AddInvoiceBaseItemResponse.class, query).block();
 
+        // todo handle bad response from graphQL
+
         try {
             if (graphQLData == null)
                 return "not working, graphQLData == null";
@@ -28,7 +32,7 @@ public class InvoiceBaseItemRepository extends GraphQLRepository {
             if (graphQLData.getResult().getAddInvoiceBaseItem().getDbId() == null)
                 return "not working, getDbId == null";
 
-            return "not-implemented";
+            return graphQLData.getResult().getAddInvoiceBaseItem().getDbId();
             //if (graphQLData == null) return "null";
             //return graphQLData.getResult().getAddInvoiceBaseItem().getDbId();
         } catch (Exception e) {
@@ -37,7 +41,7 @@ public class InvoiceBaseItemRepository extends GraphQLRepository {
     }
 
     private GraphQLQuery getQuery(InvoiceBaseItemDTO invoiceItem) {
-        return new GraphQLQuery(String.format("mutation {\n" +
+        return new GraphQLQuery(String.format(Locale.ROOT, "mutation {\n" +
                         "addInvoiceBaseItem(\n" +
                         "subledgerDbId: %s,\n" +
                         "productDbId: %s,\n" +
@@ -71,7 +75,7 @@ public class InvoiceBaseItemRepository extends GraphQLRepository {
                 nullOrQuote(invoiceItem.getGlObject5DbId()),
                 invoiceItem.getOurRefDbId(),
                 quote(invoiceItem.getHeaderInfo()),
-                invoiceItem.getExtOrder(),
+                nullOrQuote(invoiceItem.getExtOrder()),
                 invoiceItem.getInvoiceLayoutDbId(),
                 quote(invoiceItem.getCurrencyDbId()),
                 invoiceItem.getOwnerDbId(),
