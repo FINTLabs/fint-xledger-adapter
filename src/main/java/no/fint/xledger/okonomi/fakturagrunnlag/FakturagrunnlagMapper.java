@@ -37,7 +37,7 @@ public class FakturagrunnlagMapper {
         InvoiceBaseItemDTO dto = new InvoiceBaseItemDTO();
         dto.setSubledgerDbId(String.valueOf(subledgerDbId));
 
-        if (vareService.getVarer() == null) throw new Exception("Vare-cache ikke fylt.");
+        if (vareService.getVarer() == null) vareService.refreshIfNeeded();
         VareResource vare = getVare(linje.getVare());
         Node product = productCache.filterVarerByDbId(SellerUtil.extractProductDbId(vare.getSystemId().getIdentifikatorverdi()));
 

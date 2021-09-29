@@ -7,6 +7,7 @@ import no.fint.model.resource.okonomi.kodeverk.VareResource;
 import no.fint.xledger.graphql.caches.ProductCache;
 import no.fint.xledger.graphql.caches.SalgsordregruppeCache;
 import no.fint.xledger.model.product.Node;
+import no.fint.xledger.okonomi.CachedHandlerService;
 import no.fint.xledger.okonomi.ConfigProperties;
 import no.fint.xledger.okonomi.SellerUtil;
 import no.fint.xledger.okonomi.fakturautsteder.FakturautstederService;
@@ -14,12 +15,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
 @Service
-public class VareService {
+public class VareService extends CachedHandlerService {
 
     private final ProductCache cache;
     private final VareMapper mapper;
@@ -32,7 +34,6 @@ public class VareService {
 
     private final ConfigProperties configProperties;
 
-    @Getter
     private List<VareResource> varer;
 
     public VareService(ProductCache cache, VareMapper vareMapper, FakturautstederService fakturautstederService, SalgsordregruppeCache salgsordregruppeCache, ConfigProperties configProperties) {
@@ -43,11 +44,26 @@ public class VareService {
         this.configProperties = configProperties;
     }
 
+    public List<VareResource> getVarer() {
+        if (varer == null) refreshIfNeeded();
+        // todo: threadsafe? await until completed
+        return varer;
+    }
+
+    @Override
     @Scheduled(initialDelay = 10000, fixedDelayString = "${fint.xledger.kodeverk.refresh-interval:1500000}")
-    public void refresh() {
+    public void refreshIfNeeded() {
+        super.refreshIfNeeded();
+    }
+
+    @PostConstruct
+    public
+
+
+    public void refreshData() {
         log.info("Refreshing Vare...");
 
-        varer = new ArrayList<>();
+        ArrayList result = new ArrayList<>();
 
         for (FakturautstederResource fakturautsteder : fakturautstederService.getFakturautstedere()) {
             // Filtere pr fakturautsteder
@@ -57,13 +73,12 @@ public class VareService {
             String salgsordregruppeCode = salgsordregruppeCache.getCodeByDbId(salgsordregruppeDbId);
 
             for (Node vare : cache.filterVarerByCode(salgsordregruppeCode, configProperties.getDigistToCompareSalgsordregruppeAndProduct())) {
-                varer.add(mapper.toFint(vare, fakturautsteder));
+                result.add(mapper.toFint(vare, fakturautsteder));
             }
         }
 
-        log.info("Found " + varer.size() + " varer");
+        log.info("Found " + result.size() + " varer");
+        this.varer = result;
         log.info("End refreshing Vare");
     }
-
-
 }

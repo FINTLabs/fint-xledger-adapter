@@ -23,7 +23,8 @@ public class GetAllVareHandler implements Handler {
 
     @Override
     public void accept(Event<FintLinks> response) {
-        if (vareService.getVarer() == null) vareService.refresh();
+        if (vareService.getVarer() == null) vareService.refreshIfNeeded();
+        // Todo return empty list
 
         vareService.getVarer().forEach(response::addData);
         response.setResponseStatus(ResponseStatus.ACCEPTED);

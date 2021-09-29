@@ -47,17 +47,17 @@ public class FakturagrunnlagService {
         if (subledgerDbId == 0) throw new Exception("subledgerDbID = 0. Customer create/update has failed");
 
         if (fakturautstederService.getFakturautstedere() == null)
-            throw new Exception("Fakturautstedere-cache ikke fylt.");
+            fakturautstederService.refreshIfNeeded();
 
         FakturautstederResource fakturautsteder = getFakturautsteder(fakturagrunnlagResource.getFakturautsteder());
 
         int lineNumber = 1;
         for (FakturalinjeResource linje : fakturagrunnlagResource.getFakturalinjer()) {
             String dbId = invoiceBaseItemRepository.add(mapper.toXledger(linje, subledgerDbId, fakturautsteder, fakturagrunnlagResource, lineNumber++));
-            log.trace("invoiceBaseItem added in Xledger with dbID: " + dbId);
+            log.info("invoiceBaseItem added in Xledger with dbID: " + dbId);
         }
 
-        log.info("FAKTURAGRUNNLAG CREATED: " + fakturagrunnlagResource.getOrdrenummer());
+        log.info("FAKTURAGRUNNLAG CREATED: " + fakturagrunnlagResource.getOrdrenummer().getIdentifikatorverdi());
     }
 
     private FakturautstederResource getFakturautsteder(List<Link> links) throws Exception {

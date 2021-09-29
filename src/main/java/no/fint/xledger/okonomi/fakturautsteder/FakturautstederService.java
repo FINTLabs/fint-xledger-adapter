@@ -1,6 +1,5 @@
 package no.fint.xledger.okonomi.fakturautsteder;
 
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.model.resource.Link;
 import no.fint.model.resource.administrasjon.personal.PersonalressursResource;
@@ -12,6 +11,7 @@ import no.fint.xledger.graphql.caches.ContactCache;
 import no.fint.xledger.graphql.caches.SalgsordregruppeCache;
 import no.fint.xledger.model.contacts.Contact;
 import no.fint.xledger.model.objectValues.Node;
+import no.fint.xledger.okonomi.CachedHandlerService;
 import no.fint.xledger.okonomi.ConfigProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-public class FakturautstederService {
+public class FakturautstederService extends CachedHandlerService {
 
     private final SalgsordregruppeCache salgsordregrupper;
     private final ContactCache contacts;
@@ -35,7 +35,6 @@ public class FakturautstederService {
     @Autowired
     private final ConfigProperties configProperties;
 
-    @Getter
     private List<FakturautstederResource> fakturautstedere;
 
     public FakturautstederService(SalgsordregruppeCache salgsordregrupper, ContactCache contacts, FakturautstederMapper mapper, FintRepository fintRepository, ConfigProperties configProperties) {
@@ -46,10 +45,29 @@ public class FakturautstederService {
         this.configProperties = configProperties;
     }
 
+    public List<FakturautstederResource> getFakturautstedere() {
+        if (fakturautstedere == null) refreshIfNeeded();
+
+        while (fakturautstedere == null) {
+            try {
+                Thread.sleep(1000);
+            } catch (Exception e) {
+                log.warn(e.getMessage());
+            }
+        }
+
+        return fakturautstedere;
+    }
+
+    @Override
     @Scheduled(initialDelay = 9000, fixedDelayString = "${fint.xledger.kodeverk.refresh-interval:1500000}")
-    public void refresh() {
+    public void refreshIfNeeded() {
+        super.refreshIfNeeded();
+    }
+
+    public void refreshData() {
         log.debug("Refreshing Fakturautstedere...");
-        fakturautstedere = new ArrayList<>();
+        ArrayList result = new ArrayList<>();
 
         for (Node salgsordregruppe : salgsordregrupper.get()) {
             String orgNo = extractOrgnummerFromDescription(salgsordregruppe.getDescription());
@@ -62,12 +80,13 @@ public class FakturautstederService {
             log.info("School " + skoleResource.getNavn() + " contains " + skoleressursResources.size() + " skoleressurser");
 
             for (Contact matchingContact : findMatchingContacts(skoleressursResources)) {
-                fakturautstedere.add(mapper.toFint(salgsordregruppe, skoleResource, matchingContact, orgNo));
+                result.add(mapper.toFint(salgsordregruppe, skoleResource, matchingContact, orgNo));
                 log.debug(skoleResource.getNavn() + " contact match: " + matchingContact.getName());
             }
         }
 
-        log.info("Found " + fakturautstedere.size() + " fakturautstedere");
+        log.info("Found " + result.size() + " fakturautstedere");
+        this.fakturautstedere = result;
         log.debug("End refreshing Fakturautstedere");
     }
 
@@ -114,7 +133,6 @@ public class FakturautstederService {
 
         return matchingContacts;
     }
-
 
     private String extractOrgnummerFromDescription(String salgsordregruppeDescription) {
         // Example input: 91071 Kvadraturen videregående skole (974 595 117)
