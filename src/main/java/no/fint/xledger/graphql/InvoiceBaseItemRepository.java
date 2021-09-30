@@ -17,12 +17,20 @@ public class InvoiceBaseItemRepository extends GraphQLRepository {
     }
 
     public String add(InvoiceBaseItemDTO invoiceItem) {
-        GraphQLQuery query = getQuery(invoiceItem);
+        GraphQLQuery query = getAddQuery(invoiceItem);
+
+        //log.info("Query that fails: " + query.getQuery());
         AddInvoiceBaseItemResponse graphQLData = xledgerWebClient.post(AddInvoiceBaseItemResponse.class, query).block();
         return graphQLData.getResult().getAddInvoiceBaseItem().getDbId();
     }
 
-    private GraphQLQuery getQuery(InvoiceBaseItemDTO invoiceItem) {
+//    public String get() {
+//        GraphQLQuery query = getAddQuery(invoiceItem);
+//        AddInvoiceBaseItemResponse graphQLData = xledgerWebClient.post(AddInvoiceBaseItemResponse.class, query).block();
+//        return graphQLData.getResult().getAddInvoiceBaseItem().getDbId();
+//    }
+
+    private GraphQLQuery getAddQuery(InvoiceBaseItemDTO invoiceItem) {
         return new GraphQLQuery(String.format(Locale.ROOT, "mutation {\n" +
                         "addInvoiceBaseItem(\n" +
                         "subledgerDbId: %s,\n" +
@@ -68,5 +76,25 @@ public class InvoiceBaseItemRepository extends GraphQLRepository {
                 invoiceItem.getUnitPrice(),
                 invoiceItem.getQuantity(),
                 invoiceItem.getLineNumber()));
+    }
+
+    private GraphQLQuery getGetQuery() {
+        return new GraphQLQuery(String.format("{\n" +
+                "  invoiceBaseItems(last: 500) {\n" +
+                "    edges {\n" +
+                "      node{\n" +
+                "        dbId\n" +
+                "        createdAt\n" +
+                "        extOrder\n" +
+                "        amount\n" +
+                "        taxAmount\n" +
+                "        subledger {\n" +
+                "          dbId\n" +
+                "          description\n" +
+                "        }\n" +
+                "      }\n" +
+                "    }\n" +
+                "  }\n" +
+                "}\n"));
     }
 }
