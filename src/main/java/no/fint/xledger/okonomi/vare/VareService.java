@@ -1,6 +1,5 @@
 package no.fint.xledger.okonomi.vare;
 
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.model.resource.okonomi.faktura.FakturautstederResource;
 import no.fint.model.resource.okonomi.kodeverk.VareResource;
@@ -11,11 +10,9 @@ import no.fint.xledger.okonomi.CachedHandlerService;
 import no.fint.xledger.okonomi.ConfigProperties;
 import no.fint.xledger.okonomi.SellerUtil;
 import no.fint.xledger.okonomi.fakturautsteder.FakturautstederService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,10 +23,8 @@ public class VareService extends CachedHandlerService {
     private final ProductCache cache;
     private final VareMapper mapper;
 
-    @Autowired
     private FakturautstederService fakturautstederService;
 
-    @Autowired
     private SalgsordregruppeCache salgsordregruppeCache;
 
     private final ConfigProperties configProperties;

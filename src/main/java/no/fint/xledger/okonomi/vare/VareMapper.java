@@ -9,13 +9,11 @@ import no.fint.xledger.graphql.caches.MerverdiavgiftCache;
 import no.fint.xledger.model.product.Node;
 import no.fint.xledger.okonomi.SellerUtil;
 import no.fint.xledger.utilities.ConvertUtilities;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class VareMapper {
 
-    @Autowired
     private MerverdiavgiftCache merverdiavgiftCache;
 
     public VareMapper(MerverdiavgiftCache merverdiavgiftCache) {

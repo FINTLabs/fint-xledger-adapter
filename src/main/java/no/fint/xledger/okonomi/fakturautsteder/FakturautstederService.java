@@ -13,7 +13,6 @@ import no.fint.xledger.model.contacts.Contact;
 import no.fint.xledger.model.objectValues.Node;
 import no.fint.xledger.okonomi.CachedHandlerService;
 import no.fint.xledger.okonomi.ConfigProperties;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -29,10 +28,8 @@ public class FakturautstederService extends CachedHandlerService {
     private final ContactCache contacts;
     private final FakturautstederMapper mapper;
 
-    @Autowired
     private final FintRepository fintRepository;
 
-    @Autowired
     private final ConfigProperties configProperties;
 
     private List<FakturautstederResource> fakturautstedere;

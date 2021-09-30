@@ -11,16 +11,14 @@ import no.fint.xledger.model.contacts.Contact;
 import no.fint.xledger.model.objectValues.Node;
 import no.fint.xledger.okonomi.ConfigProperties;
 import no.fint.xledger.okonomi.SellerUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class FakturautstederMapper {
 
-    @Autowired
     private final ProductCache products;
 
-    private  final ConfigProperties configProperties;
+    private final ConfigProperties configProperties;
 
     public FakturautstederMapper(ProductCache products, ConfigProperties configProperties) {
         this.products = products;

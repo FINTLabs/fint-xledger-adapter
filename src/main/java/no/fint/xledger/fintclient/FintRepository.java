@@ -4,11 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import no.fint.model.resource.Link;
 import no.fint.model.resource.administrasjon.personal.PersonalressursResource;
 import no.fint.model.resource.felles.PersonResource;
-import no.fint.model.resource.okonomi.faktura.FakturautstederResource;
-import no.fint.model.resource.okonomi.kodeverk.VareResource;
 import no.fint.model.resource.utdanning.elev.SkoleressursResource;
 import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -18,10 +15,11 @@ import java.util.List;
 @Repository
 public class FintRepository {
 
-    @Autowired
-    private ResourceResolverService resolverService;
+    private final ResourceResolverService resolverService;
 
-    //resolverService.resolve(orgid, resolveLink(fakturagrunnlag.getMottaker().getPerson()), PersonResource .class)
+    public FintRepository(ResourceResolverService resolverService) {
+        this.resolverService = resolverService;
+    }
 
     public SkoleResource getSkole(String orgId, String orgNummer) {
         try {

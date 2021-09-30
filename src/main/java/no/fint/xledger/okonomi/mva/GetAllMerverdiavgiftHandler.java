@@ -1,11 +1,10 @@
 package no.fint.xledger.okonomi.mva;
 
-import no.fint.event.model.ResponseStatus;
-import no.fint.xledger.handler.Handler;
 import no.fint.event.model.Event;
+import no.fint.event.model.ResponseStatus;
 import no.fint.model.okonomi.kodeverk.KodeverkActions;
 import no.fint.model.resource.FintLinks;
-import org.springframework.beans.factory.annotation.Autowired;
+import no.fint.xledger.handler.Handler;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -14,11 +13,9 @@ import java.util.Set;
 @Service
 public class GetAllMerverdiavgiftHandler implements Handler {
 
-    @Autowired
     private final MerverdiavgiftService merverdiavgiftService;
 
-    public GetAllMerverdiavgiftHandler(MerverdiavgiftService merverdiavgiftService)
-    {
+    public GetAllMerverdiavgiftHandler(MerverdiavgiftService merverdiavgiftService) {
         this.merverdiavgiftService = merverdiavgiftService;
     }
 

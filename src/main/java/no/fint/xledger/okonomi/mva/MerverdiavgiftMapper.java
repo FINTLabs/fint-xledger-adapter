@@ -4,13 +4,15 @@ import no.fint.model.felles.kompleksedatatyper.Identifikator;
 import no.fint.model.resource.okonomi.kodeverk.MerverdiavgiftResource;
 import no.fint.xledger.model.objectValues.Node;
 import no.fint.xledger.okonomi.ConfigProperties;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MerverdiavgiftMapper {
-    @Autowired
-    private ConfigProperties configProperties;
+    private final ConfigProperties configProperties;
+
+    public MerverdiavgiftMapper(ConfigProperties configProperties) {
+        this.configProperties = configProperties;
+    }
 
     public MerverdiavgiftResource toFint(Node xledgerMva) {
         MerverdiavgiftResource mva = new MerverdiavgiftResource();
@@ -33,13 +35,10 @@ public class MerverdiavgiftMapper {
             //  ZERO_LEVEL= 0%
 
             String mvaCode = xledgerMva.getCode2().getName();
-            if (configProperties.getMva().containsKey(mvaCode))
-            {
-                  mva.setSats(configProperties.getMva().get(mvaCode));
-            }
-            else
-            {
-                 throw new UnsupportedOperationException("Configuration is missing for mvaCode: " + mvaCode);
+            if (configProperties.getMva().containsKey(mvaCode)) {
+                mva.setSats(configProperties.getMva().get(mvaCode));
+            } else {
+                throw new UnsupportedOperationException("Configuration is missing for mvaCode: " + mvaCode);
             }
         }
 

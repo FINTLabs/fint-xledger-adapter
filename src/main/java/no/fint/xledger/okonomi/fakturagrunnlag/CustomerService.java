@@ -5,7 +5,6 @@ import no.fint.model.resource.felles.PersonResource;
 import no.fint.xledger.fintclient.FintRepository;
 import no.fint.xledger.graphql.CustomerRepository;
 import no.fint.xledger.okonomi.ConfigProperties;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,17 +12,20 @@ import java.util.List;
 @Service
 public class CustomerService {
 
-    @Autowired
-    private ConfigProperties configProperties;
+    private final ConfigProperties configProperties;
 
-    @Autowired
-    private CustomerRepository customerRepository;
+    private final CustomerRepository customerRepository;
 
-    @Autowired
-    private FintRepository fintRepository;
+    private final FintRepository fintRepository;
 
-    @Autowired
-    private CustomerMapper mapper;
+    private final CustomerMapper mapper;
+
+    public CustomerService(ConfigProperties configProperties, CustomerRepository customerRepository, FintRepository fintRepository, CustomerMapper mapper) {
+        this.configProperties = configProperties;
+        this.customerRepository = customerRepository;
+        this.fintRepository = fintRepository;
+        this.mapper = mapper;
+    }
 
     public int createOrUpdate(List<Link> personLinks) throws Exception {
         PersonResource person = fintRepository.getPerson(configProperties.getOrganization(), personLinks);

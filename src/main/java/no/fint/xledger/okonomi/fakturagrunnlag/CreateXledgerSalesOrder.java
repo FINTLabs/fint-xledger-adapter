@@ -4,35 +4,22 @@ import lombok.extern.slf4j.Slf4j;
 import no.fint.event.model.Event;
 import no.fint.event.model.Operation;
 import no.fint.event.model.ResponseStatus;
-import no.fint.model.felles.kompleksedatatyper.Personnavn;
-import no.fint.model.resource.Link;
-import no.fint.model.resource.felles.PersonResource;
 import no.fint.model.resource.okonomi.faktura.FakturagrunnlagResource;
-import no.fint.model.resource.okonomi.faktura.FakturalinjeResource;
-import no.fint.model.resource.okonomi.faktura.FakturautstederResource;
-import no.fint.model.resource.okonomi.kodeverk.MerverdiavgiftResource;
-import no.fint.model.resource.okonomi.kodeverk.VareResource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Slf4j
 @Service
-//@ConditionalOnProperty("fint.adapter.order.visma.enabled")
 public class CreateXledgerSalesOrder implements Processor<FakturagrunnlagResource> {
 
-    @Autowired
-    private FakturagrunnlagService fakturagrunnlagService;
+    private final FakturagrunnlagService fakturagrunnlagService;
 
-//    @Autowired
-//    private ResourceResolverService resolverService;
+    public CreateXledgerSalesOrder(FakturagrunnlagService fakturagrunnlagService) {
+        this.fakturagrunnlagService = fakturagrunnlagService;
+    }
 
     @Override
     public FakturagrunnlagResource apply(Event event, FakturagrunnlagResource resource) {

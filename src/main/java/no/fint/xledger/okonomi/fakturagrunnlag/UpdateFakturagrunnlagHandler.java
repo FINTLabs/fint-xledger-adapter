@@ -2,14 +2,13 @@ package no.fint.xledger.okonomi.fakturagrunnlag;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import no.fint.event.model.Event;
 import no.fint.event.model.Operation;
 import no.fint.event.model.ResponseStatus;
-import no.fint.model.resource.okonomi.faktura.FakturagrunnlagResource;
-import no.fint.xledger.handler.Handler;
-import no.fint.event.model.Event;
 import no.fint.model.okonomi.faktura.FakturaActions;
 import no.fint.model.resource.FintLinks;
-import org.springframework.beans.factory.annotation.Autowired;
+import no.fint.model.resource.okonomi.faktura.FakturagrunnlagResource;
+import no.fint.xledger.handler.Handler;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -20,16 +19,19 @@ import java.util.stream.Collectors;
 @Service
 public class UpdateFakturagrunnlagHandler implements Handler {
 
-    @Autowired
-    ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
-    @Autowired
-    FakturagrunnlagValidator validator;
+    private final FakturagrunnlagValidator validator;
 
-    @Autowired
-    List<Processor<FakturagrunnlagResource>> processors;
+    private final List<Processor<FakturagrunnlagResource>> processors;
 
-    EnumMap<Operation, Processor<FakturagrunnlagResource>> processorMap;
+    private EnumMap<Operation, Processor<FakturagrunnlagResource>> processorMap;
+
+    public UpdateFakturagrunnlagHandler(ObjectMapper objectMapper, FakturagrunnlagValidator validator, List<Processor<FakturagrunnlagResource>> processors) {
+        this.objectMapper = objectMapper;
+        this.validator = validator;
+        this.processors = processors;
+    }
 
     @PostConstruct
     public void init() {

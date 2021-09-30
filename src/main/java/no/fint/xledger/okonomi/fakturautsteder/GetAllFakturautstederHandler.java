@@ -5,7 +5,6 @@ import no.fint.event.model.ResponseStatus;
 import no.fint.model.okonomi.faktura.FakturaActions;
 import no.fint.model.resource.FintLinks;
 import no.fint.xledger.handler.Handler;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -13,8 +12,7 @@ import java.util.Set;
 
 @Service
 public class GetAllFakturautstederHandler implements Handler {
-    @Autowired
-    private FakturautstederService fakturautstederService;
+    private final FakturautstederService fakturautstederService;
 
     public GetAllFakturautstederHandler(FakturautstederService fakturautstederService) {
         this.fakturautstederService = fakturautstederService;

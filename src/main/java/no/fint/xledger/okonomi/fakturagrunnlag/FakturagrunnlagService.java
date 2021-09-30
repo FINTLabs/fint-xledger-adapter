@@ -10,7 +10,6 @@ import no.fint.xledger.graphql.InvoiceBaseItemRepository;
 import no.fint.xledger.okonomi.ConfigProperties;
 import no.fint.xledger.okonomi.fakturautsteder.FakturautstederService;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,26 +18,25 @@ import java.util.List;
 @Service
 public class FakturagrunnlagService {
 
-    @Autowired
-    private InvoiceBaseItemRepository invoiceBaseItemRepository;
+    private final InvoiceBaseItemRepository invoiceBaseItemRepository;
 
-    @Autowired
-    private CustomerService customerService;
+    private final CustomerService customerService;
 
-    @Autowired
-    private FakturagrunnlagMapper mapper;
+    private final FakturagrunnlagMapper mapper;
 
-    @Autowired
-    private FintRepository fintRepository;
+    private final FintRepository fintRepository;
 
-    @Autowired
-    private ConfigProperties configProperties;
+    private final ConfigProperties configProperties;
 
-    @Autowired
-    private FakturautstederService fakturautstederService;
+    private final FakturautstederService fakturautstederService;
 
-    public FakturagrunnlagService(InvoiceBaseItemRepository invoiceBaseItemRepository) {
+    public FakturagrunnlagService(InvoiceBaseItemRepository invoiceBaseItemRepository, CustomerService customerService, FakturagrunnlagMapper mapper, FintRepository fintRepository, ConfigProperties configProperties, FakturautstederService fakturautstederService) {
         this.invoiceBaseItemRepository = invoiceBaseItemRepository;
+        this.customerService = customerService;
+        this.mapper = mapper;
+        this.fintRepository = fintRepository;
+        this.configProperties = configProperties;
+        this.fakturautstederService = fakturautstederService;
     }
 
     public void addFakturagrunnlag(FakturagrunnlagResource fakturagrunnlagResource) throws Exception {

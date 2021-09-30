@@ -13,7 +13,6 @@ import no.fint.xledger.okonomi.ConfigProperties;
 import no.fint.xledger.okonomi.SellerUtil;
 import no.fint.xledger.okonomi.vare.VareService;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,17 +20,20 @@ import java.util.List;
 @Service
 public class FakturagrunnlagMapper {
 
-    @Autowired
-    private FintRepository fintRepository;
+    private final FintRepository fintRepository;
 
-    @Autowired
-    private ConfigProperties configProperties;
+    private final ConfigProperties configProperties;
 
-    @Autowired
-    private ProductCache productCache;
+    private final ProductCache productCache;
 
-    @Autowired
-    private VareService vareService;
+    private final VareService vareService;
+
+    public FakturagrunnlagMapper(FintRepository fintRepository, ConfigProperties configProperties, ProductCache productCache, VareService vareService) {
+        this.fintRepository = fintRepository;
+        this.configProperties = configProperties;
+        this.productCache = productCache;
+        this.vareService = vareService;
+    }
 
     public InvoiceBaseItemDTO toXledger(FakturalinjeResource linje, int subledgerDbId, FakturautstederResource fakturautsteder, FakturagrunnlagResource fakturagrunnlag, int lineNumber) throws Exception {
         InvoiceBaseItemDTO dto = new InvoiceBaseItemDTO();
