@@ -1,9 +1,10 @@
 package no.fint.xledger.model.invoiceBaseItem;
 
-
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class InvoiceBaseItemDTO {
 
     @Getter
@@ -77,4 +78,19 @@ public class InvoiceBaseItemDTO {
     @Getter
     @Setter
     private int lineNumber;
+
+    public void setOurRefDbIdFromString(String input) {
+        if (input == null || input.length() == 0) {
+            setOurRefDbId(0);
+        } else {
+            try {
+                setOurRefDbId(Integer.parseInt(input));
+            }
+            catch (NumberFormatException e)
+            {
+                setOurRefDbId(0);
+                log.error(e.getMessage());
+            }
+        }
+    }
 }

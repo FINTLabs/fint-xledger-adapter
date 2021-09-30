@@ -53,7 +53,9 @@ public class FakturagrunnlagMapper {
 
         PersonResource person = fintRepository.getPerson(configProperties.getOrganization(), fakturagrunnlag.getMottaker().getPerson());
         dto.setYourReference(CustomerMapper.personnavnToString(person.getNavn(), false));
-        //dto.setOurRefDbId(0); // Not available through addInvoiceBaseItem
+
+        String ourRefDbId = SellerUtil.extractContactDbId(fakturautsteder.getSystemId().getIdentifikatorverdi());
+        dto.setOurRefDbIdFromString(ourRefDbId);
 
         dto.setHeaderInfo("Kontaktinfo: " + fakturautsteder.getNavn());
         dto.setExtOrder(fakturagrunnlag.getOrdrenummer().getIdentifikatorverdi());

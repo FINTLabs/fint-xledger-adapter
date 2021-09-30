@@ -34,6 +34,16 @@ public class SellerUtil {
         return fakturautstederCombinedId.substring(0, end);
     }
 
+    public static String extractContactDbId(String fakturautstederCombinedId) {
+        if (fakturautstederCombinedId == null || fakturautstederCombinedId.length() == 0)
+            throw new IllegalArgumentException("combindedId could not be empty");
+        if (!fakturautstederCombinedId.contains("-"))
+            throw new IllegalArgumentException("combindedId should contain a -");
+
+        int index = fakturautstederCombinedId.indexOf("-");
+        return fakturautstederCombinedId.substring(index + 1);
+    }
+
     public static String createVareId(FakturautstederResource fakturautstederResource, no.fint.xledger.model.product.Node vare) {
         return createVareId(fakturautstederResource.getSystemId().getIdentifikatorverdi(), vare.getDbId());
     }
