@@ -56,9 +56,9 @@ public class VareService extends CachedHandlerService {
         super.refreshIfNeeded();
     }
 
-    @PostConstruct
-    public
-
+    // Todo:
+    //@PostConstruct
+    //public
 
     public void refreshData() {
         log.info("Refreshing Vare...");
