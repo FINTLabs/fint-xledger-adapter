@@ -48,10 +48,10 @@ public class CustomerMapper {
         String result = "";
         if (surenameFirst) {
             if (StringUtils.hasText(navn.getEtternavn())) result += navn.getEtternavn() + ", ";
-            if (StringUtils.hasText(navn.getFornavn())) result = navn.getFornavn() + " ";
+            if (StringUtils.hasText(navn.getFornavn())) result += navn.getFornavn() + " ";
             if (StringUtils.hasText(navn.getMellomnavn())) result += navn.getMellomnavn();
         } else {
-            if (StringUtils.hasText(navn.getFornavn())) result = navn.getFornavn() + " ";
+            if (StringUtils.hasText(navn.getFornavn())) result += navn.getFornavn() + " ";
             if (StringUtils.hasText(navn.getMellomnavn())) result += navn.getMellomnavn() + " ";
             if (StringUtils.hasText(navn.getEtternavn())) result += navn.getEtternavn();
         }
