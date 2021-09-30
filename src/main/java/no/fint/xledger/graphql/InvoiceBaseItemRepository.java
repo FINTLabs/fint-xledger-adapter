@@ -19,25 +19,7 @@ public class InvoiceBaseItemRepository extends GraphQLRepository {
     public String add(InvoiceBaseItemDTO invoiceItem) {
         GraphQLQuery query = getQuery(invoiceItem);
         AddInvoiceBaseItemResponse graphQLData = xledgerWebClient.post(AddInvoiceBaseItemResponse.class, query).block();
-
-        // todo handle bad response from graphQL
-
-        try {
-            if (graphQLData == null)
-                return "not working, graphQLData == null";
-            if (graphQLData.getResult() == null)
-                return "not working, getResult == null";
-            if (graphQLData.getResult().getAddInvoiceBaseItem() == null)
-                return "not working, getAddInvoiceBaseItem == null";
-            if (graphQLData.getResult().getAddInvoiceBaseItem().getDbId() == null)
-                return "not working, getDbId == null";
-
-            return graphQLData.getResult().getAddInvoiceBaseItem().getDbId();
-            //if (graphQLData == null) return "null";
-            //return graphQLData.getResult().getAddInvoiceBaseItem().getDbId();
-        } catch (Exception e) {
-            return e.getMessage();
-        }
+        return graphQLData.getResult().getAddInvoiceBaseItem().getDbId();
     }
 
     private GraphQLQuery getQuery(InvoiceBaseItemDTO invoiceItem) {
@@ -59,6 +41,7 @@ public class InvoiceBaseItemRepository extends GraphQLRepository {
                         "currencyDbId: %s,\n" +
                         "ownerDbId: %s,\n" +
                         "fieldGroupDbId: %s,\n" +
+                        "text: %s,\n" +
                         "unitPrice: %f,\n" +
                         "quantity: %f,\n" +
                         "lineNumber: %d" +
@@ -81,6 +64,7 @@ public class InvoiceBaseItemRepository extends GraphQLRepository {
                 quote(invoiceItem.getCurrencyDbId()),
                 invoiceItem.getOwnerDbId(),
                 invoiceItem.getFieldGroupDbId(),
+                nullOrQuote(invoiceItem.getText()),
                 invoiceItem.getUnitPrice(),
                 invoiceItem.getQuantity(),
                 invoiceItem.getLineNumber()));

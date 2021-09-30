@@ -63,6 +63,7 @@ public class FakturagrunnlagMapper {
         dto.setCurrencyDbId(configProperties.getCurrencyDbId());
         dto.setOwnerDbId(configProperties.getOwnerDbId());
         dto.setFieldGroupDbId(SellerUtil.extractSalgsordregruppeDbId(fakturautsteder.getSystemId().getIdentifikatorverdi()));
+        dto.setText(fritekstToString(linje.getFritekst()));
 
         dto.setUnitPrice((float) (linje.getPris() / 100.0));
         dto.setQuantity(linje.getAntall());
@@ -82,5 +83,18 @@ public class FakturagrunnlagMapper {
                 .orElseThrow(Exception::new);
         // todo better exception type/message
         return vare;
+    }
+
+    private String fritekstToString(List<String> list) {
+        if (list == null || list.size() == 0) return "";
+        String output = "";
+
+        for (String line : list) {
+            if (!output.equals(""))
+                output += "\n";
+            output += line;
+        }
+
+        return output.trim();
     }
 }

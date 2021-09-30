@@ -79,6 +79,10 @@ public class InvoiceBaseItemDTO {
     @Setter
     private int lineNumber;
 
+    @Getter
+    @Setter
+    private String text;
+
     public void setOurRefDbIdFromString(String input) {
         if (input == null || input.length() == 0) {
             setOurRefDbId(0);
