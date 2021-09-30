@@ -16,7 +16,7 @@ public class CustomerMapper {
     public CustomerDTO toXledger(PersonResource person, int companyDbId) {
         CustomerDTO customer = new CustomerDTO();
 
-        customer.setDescription(getPersonnavnAsString(person.getNavn()));
+        customer.setDescription(personnavnToString(person.getNavn(), true));
         customer.setCompanyDbId(companyDbId);
         customer.setCompanyNumber(person.getFodselsnummer().getIdentifikatorverdi());
 
@@ -42,13 +42,19 @@ public class CustomerMapper {
         return customer;
     }
 
-    private String getPersonnavnAsString(Personnavn navn) {
+    public static String personnavnToString(Personnavn navn, Boolean surenameFirst) {
         if (navn == null) return null;
 
         String result = "";
-        if (StringUtils.hasText(navn.getEtternavn())) result += navn.getEtternavn() + ", ";
-        if (StringUtils.hasText(navn.getFornavn())) result = navn.getFornavn() + " ";
-        if (StringUtils.hasText(navn.getMellomnavn())) result += navn.getMellomnavn();
+        if (surenameFirst) {
+            if (StringUtils.hasText(navn.getEtternavn())) result += navn.getEtternavn() + ", ";
+            if (StringUtils.hasText(navn.getFornavn())) result = navn.getFornavn() + " ";
+            if (StringUtils.hasText(navn.getMellomnavn())) result += navn.getMellomnavn();
+        } else {
+            if (StringUtils.hasText(navn.getFornavn())) result = navn.getFornavn() + " ";
+            if (StringUtils.hasText(navn.getMellomnavn())) result += navn.getMellomnavn() + " ";
+            if (StringUtils.hasText(navn.getEtternavn())) result += navn.getEtternavn();
+        }
 
         return result.trim();
     }

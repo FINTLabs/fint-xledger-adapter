@@ -50,7 +50,7 @@ public class InvoiceBaseItemRepository extends GraphQLRepository {
                         "glObject3DbId: %s,\n" +
                         "glObject4DbId: %s,\n" +
                         "glObject5DbId: %s,\n" +
-                        "yourReference: \"\",\n" + // will be used when we get parent information
+                        "yourReference: %s,\n" +
                         "ourRefDbId: %d,\n" +
                         "headerInfo: %s,\n" +
                         "approved: true,\n" +
@@ -73,6 +73,7 @@ public class InvoiceBaseItemRepository extends GraphQLRepository {
                 nullOrQuote(invoiceItem.getGlObject3DbId()),
                 nullOrQuote(invoiceItem.getGlObject4DbId()),
                 nullOrQuote(invoiceItem.getGlObject5DbId()),
+                nullOrQuote(invoiceItem.getYourReference()),
                 invoiceItem.getOurRefDbId(),
                 quote(invoiceItem.getHeaderInfo()),
                 nullOrQuote(invoiceItem.getExtOrder()),

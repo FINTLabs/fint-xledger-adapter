@@ -1,6 +1,7 @@
 package no.fint.xledger.okonomi.fakturagrunnlag;
 
 import no.fint.model.resource.Link;
+import no.fint.model.resource.felles.PersonResource;
 import no.fint.model.resource.okonomi.faktura.FakturagrunnlagResource;
 import no.fint.model.resource.okonomi.faktura.FakturalinjeResource;
 import no.fint.model.resource.okonomi.faktura.FakturautstederResource;
@@ -50,6 +51,8 @@ public class FakturagrunnlagMapper {
         if (product.getGlObject4() != null) dto.setGlObject4DbId(String.valueOf(product.getGlObject4().getDbId()));
         if (product.getGlObject5() != null) dto.setGlObject5DbId(String.valueOf(product.getGlObject5().getDbId()));
 
+        PersonResource person = fintRepository.getPerson(configProperties.getOrganization(), fakturagrunnlag.getMottaker().getPerson());
+        dto.setYourReference(CustomerMapper.personnavnToString(person.getNavn(), false));
         //dto.setOurRefDbId(0); // Not available through addInvoiceBaseItem
 
         dto.setHeaderInfo("Kontaktinfo: " + fakturautsteder.getNavn());
