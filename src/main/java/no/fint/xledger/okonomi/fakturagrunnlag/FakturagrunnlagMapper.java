@@ -84,8 +84,8 @@ public class FakturagrunnlagMapper {
                 .stream()
                 .filter(f -> f.getSystemId().getIdentifikatorverdi().equals(id))
                 .findFirst()
-                .orElseThrow(Exception::new);
-        // todo better exception type/message
+                .orElseThrow(() -> new IllegalArgumentException("Didn't find vare with id " + id));
+                           
         return vare;
     }
 

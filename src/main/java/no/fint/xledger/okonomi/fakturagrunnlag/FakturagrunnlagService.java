@@ -68,7 +68,7 @@ public class FakturagrunnlagService {
         log.info("FAKTURAGRUNNLAG CREATED: " + fakturagrunnlagResource.getOrdrenummer().getIdentifikatorverdi());
     }
 
-    private FakturautstederResource getFakturautsteder(List<Link> links) throws Exception {
+    private FakturautstederResource getFakturautsteder(List<Link> links) throws IllegalArgumentException {
         String href = links.get(0).getHref();
         String id = StringUtils.substringAfterLast(href, "/");
 
@@ -78,8 +78,8 @@ public class FakturagrunnlagService {
                         .stream()
                         .filter(f -> f.getSystemId().getIdentifikatorverdi().equals(id))
                         .findFirst()
-                        .orElseThrow(Exception::new);
-        // todo better exception type/message
+                        .orElseThrow(() -> new IllegalArgumentException("Didn't find fakturautsteder with id " + id));
+
         return fakturautsteder;
     }
 
