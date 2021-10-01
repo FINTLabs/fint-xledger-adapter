@@ -12,7 +12,7 @@ import org.springframework.util.StringUtils;
  ***/
 public class SellerUtil {
     public static String createFakturautstederId(Node ordresalgsgruppe, Contact contact) {
-        return ordresalgsgruppe.getDbId() + "-" + contact.getCode();
+        return ordresalgsgruppe.getDbId() + "-" + contact.getDbId();
     }
 
     public static String createFakturautstederName(SkoleResource skoleResource, Contact contact) {

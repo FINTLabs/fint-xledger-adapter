@@ -55,11 +55,8 @@ public class FakturagrunnlagMapper {
         PersonResource person = fintRepository.getPerson(configProperties.getOrganization(), fakturagrunnlag.getMottaker().getPerson());
         dto.setYourReference(CustomerMapper.personnavnToString(person.getNavn(), false));
 
-        //String ourRefDbId = SellerUtil.extractContactDbId(fakturautsteder.getSystemId().getIdentifikatorverdi());
-        //dto.setOurRefDbIdFromString(ourRefDbId);
-        dto.setOurRefDbId(0);
-        // Todo: gives error
-        //"message": "Argument: \"ourRefDbId\" - the value 440753 is not valid or allowed.",
+        String ourRefDbId = SellerUtil.extractContactDbId(fakturautsteder.getSystemId().getIdentifikatorverdi());
+        dto.setOurRefDbIdFromString(ourRefDbId);
 
         dto.setHeaderInfo("Kontaktinfo: " + fakturautsteder.getNavn());
         dto.setExtOrder(fakturagrunnlag.getOrdrenummer().getIdentifikatorverdi());
@@ -79,14 +76,12 @@ public class FakturagrunnlagMapper {
     private VareResource getVare(List<Link> links) throws Exception {
         String href = links.get(0).getHref();
         String id = StringUtils.substringAfterLast(href, "/");
-        VareResource vare = vareService
+        return vareService
                 .getVarer()
                 .stream()
                 .filter(f -> f.getSystemId().getIdentifikatorverdi().equals(id))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Didn't find vare with id " + id));
-                           
-        return vare;
     }
 
     private String fritekstToString(List<String> list) {
