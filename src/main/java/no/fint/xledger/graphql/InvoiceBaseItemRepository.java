@@ -3,9 +3,14 @@ package no.fint.xledger.graphql;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.xledger.model.invoiceBaseItem.InvoiceBaseItemDTO;
 import no.fint.xledger.model.invoiceBaseItem.addInvoiceBaseItem.AddInvoiceBaseItemResponse;
+import no.fint.xledger.model.invoiceBaseItem.invoiceBaseItems.EdgesItem;
+import no.fint.xledger.model.invoiceBaseItem.invoiceBaseItems.InvoiceBaseItems;
+import no.fint.xledger.model.invoiceBaseItem.invoiceBaseItems.InvoiceBaseItemsResponse;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Repository
@@ -24,11 +29,19 @@ public class InvoiceBaseItemRepository extends GraphQLRepository {
         return graphQLData.getResult().getAddInvoiceBaseItem().getDbId();
     }
 
-//    public String get() {
-//        GraphQLQuery query = getAddQuery(invoiceItem);
-//        AddInvoiceBaseItemResponse graphQLData = xledgerWebClient.post(AddInvoiceBaseItemResponse.class, query).block();
-//        return graphQLData.getResult().getAddInvoiceBaseItem().getDbId();
-//    }
+    public List<no.fint.xledger.model.invoiceBaseItem.invoiceBaseItems.Node> get() {
+        GraphQLQuery query = getGetQuery();
+        InvoiceBaseItemsResponse graphQLData = xledgerWebClient.post(InvoiceBaseItemsResponse.class, query).block();
+        List<no.fint.xledger.model.invoiceBaseItem.invoiceBaseItems.Node> nodes = graphQLData
+                .getResult()
+                .getInvoiceBaseItems()
+                .getEdges()
+                .stream()
+                .map(no.fint.xledger.model.invoiceBaseItem.invoiceBaseItems.EdgesItem::getNode)
+                .collect(Collectors.toList());
+
+        return nodes;
+    }
 
     private GraphQLQuery getAddQuery(InvoiceBaseItemDTO invoiceItem) {
         return new GraphQLQuery(String.format(Locale.ROOT, "mutation {\n" +

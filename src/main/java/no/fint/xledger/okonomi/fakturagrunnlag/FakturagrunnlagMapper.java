@@ -1,5 +1,6 @@
 package no.fint.xledger.okonomi.fakturagrunnlag;
 
+import no.fint.model.felles.kompleksedatatyper.Identifikator;
 import no.fint.model.resource.Link;
 import no.fint.model.resource.felles.PersonResource;
 import no.fint.model.resource.okonomi.faktura.FakturagrunnlagResource;
@@ -99,5 +100,15 @@ public class FakturagrunnlagMapper {
         }
 
         return output.trim();
+    }
+
+    public FakturagrunnlagResource toFint(no.fint.xledger.model.salesOrders.Node salesOrder) {
+        FakturagrunnlagResource fakturagrunnlag = new FakturagrunnlagResource();
+
+        Identifikator identifikator = new Identifikator();
+        identifikator.setIdentifikatorverdi(salesOrder.getXorder());
+        fakturagrunnlag.setOrdrenummer(identifikator);
+
+        return fakturagrunnlag;
     }
 }

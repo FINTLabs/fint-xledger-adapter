@@ -26,6 +26,10 @@ public abstract class Cache<T> {
         return list;
     }
 
+    public void ForceRefresh() {
+        dataCollectedAt = Optional.empty();
+    }
+
     protected abstract List<T> getData();
 
     private boolean cacheExpired() {

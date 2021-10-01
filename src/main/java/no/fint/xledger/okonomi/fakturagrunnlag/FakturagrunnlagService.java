@@ -1,12 +1,16 @@
 package no.fint.xledger.okonomi.fakturagrunnlag;
 
 import lombok.extern.slf4j.Slf4j;
+import no.fint.model.resource.FintLinks;
 import no.fint.model.resource.Link;
 import no.fint.model.resource.okonomi.faktura.FakturagrunnlagResource;
 import no.fint.model.resource.okonomi.faktura.FakturalinjeResource;
 import no.fint.model.resource.okonomi.faktura.FakturautstederResource;
 import no.fint.xledger.fintclient.FintRepository;
 import no.fint.xledger.graphql.InvoiceBaseItemRepository;
+import no.fint.xledger.graphql.SalesOrdersRepository;
+import no.fint.xledger.graphql.caches.InvoiceBaseItemCache;
+import no.fint.xledger.model.salesOrders.Node;
 import no.fint.xledger.okonomi.ConfigProperties;
 import no.fint.xledger.okonomi.fakturautsteder.FakturautstederService;
 import org.apache.commons.lang3.StringUtils;
@@ -30,13 +34,19 @@ public class FakturagrunnlagService {
 
     private final FakturautstederService fakturautstederService;
 
-    public FakturagrunnlagService(InvoiceBaseItemRepository invoiceBaseItemRepository, CustomerService customerService, FakturagrunnlagMapper mapper, FintRepository fintRepository, ConfigProperties configProperties, FakturautstederService fakturautstederService) {
+    private final SalesOrdersRepository salesOrdersRepository;
+
+    private final InvoiceBaseItemCache invoiceBaseItemCache;
+
+    public FakturagrunnlagService(InvoiceBaseItemRepository invoiceBaseItemRepository, CustomerService customerService, FakturagrunnlagMapper mapper, FintRepository fintRepository, ConfigProperties configProperties, FakturautstederService fakturautstederService, SalesOrdersRepository salesOrdersRepository, InvoiceBaseItemCache invoiceBaseItemCache) {
         this.invoiceBaseItemRepository = invoiceBaseItemRepository;
         this.customerService = customerService;
         this.mapper = mapper;
         this.fintRepository = fintRepository;
         this.configProperties = configProperties;
         this.fakturautstederService = fakturautstederService;
+        this.salesOrdersRepository = salesOrdersRepository;
+        this.invoiceBaseItemCache = invoiceBaseItemCache;
     }
 
     public void addFakturagrunnlag(FakturagrunnlagResource fakturagrunnlagResource) throws Exception {
@@ -71,5 +81,13 @@ public class FakturagrunnlagService {
                         .orElseThrow(Exception::new);
         // todo better exception type/message
         return fakturautsteder;
+    }
+
+    public FakturagrunnlagResource getFakturagrunnlag(String ordrenummer) {
+        Node salesOrder = salesOrdersRepository.getSalesOrder(ordrenummer);
+        if (salesOrder != null) return mapper.toFint(salesOrder);
+
+        // todo sjekk invoicebaseitem
+        return null;
     }
 }
