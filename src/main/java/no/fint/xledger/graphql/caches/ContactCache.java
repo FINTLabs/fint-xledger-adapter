@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -27,10 +28,17 @@ public class ContactCache extends Cache<Node> {
     }
 
     public String getDbIdByCode(String contactCode) {
-        if (contactCode == null || contactCode.length() == 0) return "";
-        List<Node> filteredContacts = get().stream().filter(c -> c.getContact().getCode().equals(contactCode)).collect(Collectors.toList());
-        if (filteredContacts.size() == 0) return "";
-        if (filteredContacts.size() > 1) log.warn("Multiple contacts with code=" + contactCode);
-        return filteredContacts.get(0).getContact().getDbId();
+        try {
+            if (contactCode == null || contactCode.length() == 0) return "";
+            Optional<Node> contact = get().stream().filter(c -> c.getContact().getCode().equals(contactCode)).findFirst();
+            if (contact == null || contact.isEmpty()) {
+                log.warn("Didn't find a contact with matching code: " + contactCode);
+                return "";
+            }
+            return contact.get().getContact().getDbId();
+        } catch (Exception e){
+            log.error("Exception in getDbIdByCode: " + e.getMessage());
+            return "";
+        }
     }
 }
