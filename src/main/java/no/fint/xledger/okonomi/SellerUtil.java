@@ -12,7 +12,7 @@ import org.springframework.util.StringUtils;
  ***/
 public class SellerUtil {
     public static String createFakturautstederId(Node ordresalgsgruppe, Contact contact) {
-        return ordresalgsgruppe.getDbId() + "-" + contact.getDbId();
+        return ordresalgsgruppe.getDbId() + "-" + contact.getCode();
     }
 
     public static String createFakturautstederName(SkoleResource skoleResource, Contact contact) {
@@ -34,7 +34,7 @@ public class SellerUtil {
         return fakturautstederCombinedId.substring(0, end);
     }
 
-    public static String extractContactDbId(String fakturautstederCombinedId) {
+    public static String extractContactCode(String fakturautstederCombinedId) {
         if (fakturautstederCombinedId == null || fakturautstederCombinedId.length() == 0)
             throw new IllegalArgumentException("combindedId could not be empty");
         if (!fakturautstederCombinedId.contains("-"))

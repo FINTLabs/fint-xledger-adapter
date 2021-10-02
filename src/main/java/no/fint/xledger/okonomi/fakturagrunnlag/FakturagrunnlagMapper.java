@@ -8,6 +8,7 @@ import no.fint.model.resource.okonomi.faktura.FakturalinjeResource;
 import no.fint.model.resource.okonomi.faktura.FakturautstederResource;
 import no.fint.model.resource.okonomi.kodeverk.VareResource;
 import no.fint.xledger.fintclient.FintRepository;
+import no.fint.xledger.graphql.caches.ContactCache;
 import no.fint.xledger.graphql.caches.ProductCache;
 import no.fint.xledger.model.invoiceBaseItem.InvoiceBaseItemDTO;
 import no.fint.xledger.model.product.Node;
@@ -30,11 +31,14 @@ public class FakturagrunnlagMapper {
 
     private final VareService vareService;
 
-    public FakturagrunnlagMapper(FintRepository fintRepository, ConfigProperties configProperties, ProductCache productCache, VareService vareService) {
+    private final ContactCache contactCache;
+
+    public FakturagrunnlagMapper(FintRepository fintRepository, ConfigProperties configProperties, ProductCache productCache, VareService vareService, ContactCache contactCache) {
         this.fintRepository = fintRepository;
         this.configProperties = configProperties;
         this.productCache = productCache;
         this.vareService = vareService;
+        this.contactCache = contactCache;
     }
 
     public InvoiceBaseItemDTO toXledger(FakturalinjeResource linje, int subledgerDbId, FakturautstederResource fakturautsteder, FakturagrunnlagResource fakturagrunnlag, int lineNumber) throws Exception {
@@ -55,8 +59,9 @@ public class FakturagrunnlagMapper {
         PersonResource person = fintRepository.getPerson(configProperties.getOrganization(), fakturagrunnlag.getMottaker().getPerson());
         dto.setYourReference(CustomerMapper.personnavnToString(person.getNavn(), false));
 
-        String ourRefDbId = SellerUtil.extractContactDbId(fakturautsteder.getSystemId().getIdentifikatorverdi());
-        dto.setOurRefDbIdFromString(ourRefDbId);
+        String contactCode = SellerUtil.extractContactCode(fakturautsteder.getSystemId().getIdentifikatorverdi());
+        String contactDbId = contactCache.getDbIdByCode(contactCode);
+        dto.setOurRefDbIdFromString(contactDbId);
 
         dto.setHeaderInfo("Kontaktinfo: " + fakturautsteder.getNavn());
         dto.setExtOrder(fakturagrunnlag.getOrdrenummer().getIdentifikatorverdi());

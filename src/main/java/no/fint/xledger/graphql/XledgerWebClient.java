@@ -27,6 +27,7 @@ public class XledgerWebClient {
                         .bodyValue(graphQLQuery)
                         .retrieve()
                         .bodyToMono(clazz);
+        // todo https://stackoverflow.com/a/62176117/287647
     }
 
     private WebClient createWebClient() {

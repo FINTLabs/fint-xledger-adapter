@@ -51,6 +51,7 @@ public class FakturagrunnlagService {
 
     public void addFakturagrunnlag(FakturagrunnlagResource fakturagrunnlagResource) throws Exception {
 
+        log.info("addFakturagrunnlag started: " + fakturagrunnlagResource.getOrdrenummer().getIdentifikatorverdi());
         int subledgerDbId = customerService.createOrUpdate(fakturagrunnlagResource.getMottaker().getPerson());
         if (subledgerDbId == 0) throw new Exception("subledgerDbID = 0. Customer create/update has failed");
 
