@@ -30,8 +30,15 @@ public class ContactCache extends Cache<Node> {
     public String getDbIdByCode(String contactCode) {
         try {
             if (contactCode == null || contactCode.length() == 0) return "";
-            log.debug("Finding contact with code: " + contactCode);
-            Optional<Node> contact = get().stream().filter(c -> c.getContact().getCode().equals(contactCode)).findFirst();
+            log.info("Finding contact with code: " + contactCode);
+            Optional<Node> contact = get()
+                    .stream()
+                    .filter(c -> c != null
+                            && c.getContact() != null
+                            && c.getContact().getCode() != null
+                            && c.getContact().getCode().equals(contactCode))
+                    .findFirst();
+
             if (contact == null || contact.isEmpty()) {
                 log.warn("Didn't find a contact with matching code: " + contactCode);
                 return "";
