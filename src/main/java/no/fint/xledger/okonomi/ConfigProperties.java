@@ -44,4 +44,8 @@ public class ConfigProperties {
     @Getter
     @Setter
     private int digistToCompareSalgsordregruppeAndProduct;
+
+    @Getter
+    @Setter
+    private Boolean enableInvoiceStatus = true;
 }

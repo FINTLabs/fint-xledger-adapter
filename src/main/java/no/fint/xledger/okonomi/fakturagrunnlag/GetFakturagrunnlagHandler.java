@@ -7,10 +7,12 @@ import no.fint.model.okonomi.faktura.FakturaActions;
 import no.fint.model.resource.FintLinks;
 import no.fint.model.resource.okonomi.faktura.FakturagrunnlagResource;
 import no.fint.xledger.handler.Handler;
+import no.fint.xledger.okonomi.ConfigProperties;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 @Slf4j
@@ -19,12 +21,22 @@ public class GetFakturagrunnlagHandler implements Handler {
 
     private final FakturagrunnlagService fakturagrunnlagService;
 
-    public GetFakturagrunnlagHandler(FakturagrunnlagService fakturagrunnlagService) {
+    private final ConfigProperties configProperties;
+
+    public GetFakturagrunnlagHandler(FakturagrunnlagService fakturagrunnlagService, ConfigProperties configProperties) {
         this.fakturagrunnlagService = fakturagrunnlagService;
+        this.configProperties = configProperties;
     }
 
     @Override
     public void accept(Event<FintLinks> response) {
+        if (!configProperties.getEnableInvoiceStatus()){
+            log.warn("Invoice status not enabled");
+            response.setResponseStatus(ResponseStatus.REJECTED);
+            response.setMessage("Invoice status not enabled");
+            return;
+        }
+
         log.debug("Handling {} ...", response);
         log.trace("Event data: {}", response.getData());
         if (!StringUtils.startsWith(response.getQuery(), "ordrenummer/")) {
@@ -46,7 +58,11 @@ public class GetFakturagrunnlagHandler implements Handler {
 
     @Override
     public Set<String> actions() {
-        return Collections.singleton(FakturaActions.GET_FAKTURAGRUNNLAG.name());
+        if (configProperties.getEnableInvoiceStatus()) {
+            return Collections.singleton(FakturaActions.GET_FAKTURAGRUNNLAG.name());
+        } else {
+            return new HashSet<>();
+        }
     }
 }
 
