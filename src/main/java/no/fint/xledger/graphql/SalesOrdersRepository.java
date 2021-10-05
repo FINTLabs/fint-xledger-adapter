@@ -2,14 +2,11 @@ package no.fint.xledger.graphql;
 
 import lombok.extern.slf4j.Slf4j;
 import no.fint.xledger.model.salesOrders.EdgesItem;
-import no.fint.xledger.model.salesOrders.SalesOrdersResponse;
 import no.fint.xledger.model.salesOrders.Node;
+import no.fint.xledger.model.salesOrders.SalesOrdersResponse;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Repository
@@ -20,23 +17,31 @@ public class SalesOrdersRepository extends GraphQLRepository {
         this.xledgerWebClient = xledgerWebClient;
     }
 
-    public Node getSalesOrder(String xorder) {
-        GraphQLQuery query = getQuery(xorder);
+    public Node getSalesOrderByXorder(String xorder) {
+        return getSalesOrder(xorder, "xorder");
+    }
+
+    public Node getSalesOrderByInvoiceNumber(String invoiceNumber) {
+        return getSalesOrder(invoiceNumber, "invoiceNumber");
+    }
+
+    private Node getSalesOrder(String filterValue, String filterField) {
+        GraphQLQuery query = getQuery(filterValue, filterField);
         SalesOrdersResponse graphQLData = xledgerWebClient.post(SalesOrdersResponse.class, query).block();
 
         List<EdgesItem> edgesItems = graphQLData.getResult().getSalesOrders().getEdges();
         if (edgesItems == null || edgesItems.size() == 0) return null;
 
         if (edgesItems.size() > 1) {
-            log.warn("There are multiple salesOrder with same xorder = " + xorder);
+            log.warn("There are multiple salesOrder with same " + filterField + " = " + filterValue);
         }
 
         return edgesItems.get(0).getNode();
     }
 
-    private GraphQLQuery getQuery(String xorder) {
+    private GraphQLQuery getQuery(String filterValue, String filterField) {
         return new GraphQLQuery(String.format("{\n" +
-                        "  salesOrders(last: 1, filter: {xorder: %s}) {\n" +
+                        "  salesOrders(last: 1, filter: {%s: %s}) {\n" +
                         "    edges {\n" +
                         "      node {\n" +
                         "        xorder\n" +
@@ -67,10 +72,14 @@ public class SalesOrdersRepository extends GraphQLRepository {
                         "        taxAmount\n" +
                         "        text\n" +
                         "        yourReference\n" +
+                        "        invoiceDate\n" +
+                        "        customer {\n" +
+                        "          description\n" +
+                        "        }\n" +
                         "      }\n" +
                         "    }\n" +
                         "  }\n" +
                         "}\n"
-                , nullOrQuote(xorder)));
+                , filterField, nullOrQuote(filterValue)));
     }
 }

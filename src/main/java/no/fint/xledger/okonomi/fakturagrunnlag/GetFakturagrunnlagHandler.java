@@ -1,4 +1,3 @@
-/*
 package no.fint.xledger.okonomi.fakturagrunnlag;
 
 import lombok.extern.slf4j.Slf4j;
@@ -50,4 +49,4 @@ public class GetFakturagrunnlagHandler implements Handler {
         return Collections.singleton(FakturaActions.GET_FAKTURAGRUNNLAG.name());
     }
 }
-*/
+

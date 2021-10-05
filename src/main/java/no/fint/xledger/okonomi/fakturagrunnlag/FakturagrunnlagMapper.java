@@ -3,6 +3,7 @@ package no.fint.xledger.okonomi.fakturagrunnlag;
 import no.fint.model.felles.kompleksedatatyper.Identifikator;
 import no.fint.model.resource.Link;
 import no.fint.model.resource.felles.PersonResource;
+import no.fint.model.resource.okonomi.faktura.FakturaResource;
 import no.fint.model.resource.okonomi.faktura.FakturagrunnlagResource;
 import no.fint.model.resource.okonomi.faktura.FakturalinjeResource;
 import no.fint.model.resource.okonomi.faktura.FakturautstederResource;
@@ -107,6 +108,18 @@ public class FakturagrunnlagMapper {
 
         Identifikator identifikator = new Identifikator();
         identifikator.setIdentifikatorverdi(salesOrder.getXorder());
+        fakturagrunnlag.setOrdrenummer(identifikator);
+
+        fakturagrunnlag.addFaktura(Link.with(FakturaResource.class, "fakturanummer", salesOrder.getInvoiceNumber()));
+
+        return fakturagrunnlag;
+    }
+
+    public FakturagrunnlagResource toFint(no.fint.xledger.model.invoiceBaseItem.invoiceBaseItems.Node invoiceBaseItem) {
+        FakturagrunnlagResource fakturagrunnlag = new FakturagrunnlagResource();
+
+        Identifikator identifikator = new Identifikator();
+        identifikator.setIdentifikatorverdi(invoiceBaseItem.getExtOrder());
         fakturagrunnlag.setOrdrenummer(identifikator);
 
         return fakturagrunnlag;

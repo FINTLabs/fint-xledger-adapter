@@ -36,7 +36,7 @@ public class ContactCache extends Cache<Node> {
                 log.warn("Didn't find a contact with matching code: " + contactCode);
                 return "";
             }
-            
+
             Node node = contact.get();
             if (node == null) log.warn("getDbIdByCode: node is null");
             Contact nodeContact = node.getContact();

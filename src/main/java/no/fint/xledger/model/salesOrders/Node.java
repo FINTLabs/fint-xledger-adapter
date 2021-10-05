@@ -8,15 +8,17 @@ public @Data class Node{
 	private String amount;
 	private SoOrderType soOrderType;
 	private String yourReference;
-	private Object dueDate;
+	private String dueDate;
 	private String invoiceAmount;
 	private int subledgerDbId;
 	private double remainingAmount;
 	private String dbId;
 	private String invoiceNumber;
 	private List<DetailsItem> details;
-	private Object text;
-	private Object deliveryDate;
+	private String text;
+	private String deliveryDate;
 	private String taxAmount;
 	private double remainingInvoice;
+	private String invoiceDate;
+	private Customer customer;
 }

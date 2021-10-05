@@ -85,10 +85,13 @@ public class FakturagrunnlagService {
     }
 
     public FakturagrunnlagResource getFakturagrunnlag(String ordrenummer) {
-        Node salesOrder = salesOrdersRepository.getSalesOrder(ordrenummer);
+        log.info("getFakturagrunnlag for " + ordrenummer);
+        Node salesOrder = salesOrdersRepository.getSalesOrderByXorder(ordrenummer);
         if (salesOrder != null) return mapper.toFint(salesOrder);
 
-        // todo sjekk invoicebaseitem
+        no.fint.xledger.model.invoiceBaseItem.invoiceBaseItems.Node invoiceBaseItem = invoiceBaseItemCache.getByXorder(ordrenummer);
+        if (invoiceBaseItem != null) return mapper.toFint(invoiceBaseItem);
+
         return null;
     }
 }
