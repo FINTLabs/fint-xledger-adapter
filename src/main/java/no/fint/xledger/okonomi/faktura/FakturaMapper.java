@@ -30,7 +30,7 @@ public class FakturaMapper {
         faktura.setFakturert(faktura.getDato() != null);
         faktura.setForfallsdato(parseDate(salesOrder.getDueDate()));
         if (salesOrder.getCustomer() != null) faktura.setMottaker(salesOrder.getCustomer().getDescription());
-        faktura.setRestbelop((long)salesOrder.getRemainingAmount() * 100);
+        faktura.setRestbelop((long) salesOrder.getRemainingAmount() * 100L);
 
         faktura.addFakturagrunnlag(Link.with(FakturagrunnlagResource.class, "ordrenummer", salesOrder.getXorder()));
 
@@ -38,8 +38,13 @@ public class FakturaMapper {
     }
 
     private long toOre(String input) {
-        if (input == null || input.length() == 0) return 0;
-        return (Long.parseLong(input)) * 100;
+        try {
+            if (input == null || input.length() == 0) return 0;
+            return (Long.parseLong(input)) * 100L;
+        } catch (Exception e) {
+            log.error("Error converting input (" + input + ")in toOre: " + e.getMessage());
+            return 0L;
+        }
     }
 
     private Date parseDate(String date) {

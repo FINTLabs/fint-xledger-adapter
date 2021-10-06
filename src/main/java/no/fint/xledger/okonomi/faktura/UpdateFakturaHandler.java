@@ -1,3 +1,4 @@
+/*
 package no.fint.xledger.okonomi.faktura;
 
 import no.fint.xledger.handler.Handler;
@@ -21,3 +22,4 @@ public class UpdateFakturaHandler implements Handler {
         return Collections.singleton(FakturaActions.UPDATE_FAKTURA.name());
     }
 }
+*/

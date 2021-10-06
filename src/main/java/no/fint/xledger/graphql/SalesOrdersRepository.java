@@ -45,17 +45,17 @@ public class SalesOrdersRepository extends GraphQLRepository {
                         "    edges {\n" +
                         "      node {\n" +
                         "        xorder\n" +
-                        "        details {\n" +
-                        "          amount\n" +
-                        "          quantity\n" +
-                        "          unitPrice\n" +
-                        "          product {\n" +
-                        "            description\n" +
-                        "            code\n" +
-                        "            dbId\n" +
-                        "          }\n" +
-                        "          text\n" +
-                        "        }\n" +
+//                        "        details {\n" +
+//                        "          amount\n" +
+//                        "          quantity\n" +
+//                        "          unitPrice\n" +
+//                        "          product {\n" +
+//                        "            description\n" +
+//                        "            code\n" +
+//                        "            dbId\n" +
+//                        "          }\n" +
+//                        "          text\n" +
+//                        "        }\n" +
                         "        invoiceNumber\n" +
                         "        amount\n" +
                         "        dbId\n" +
