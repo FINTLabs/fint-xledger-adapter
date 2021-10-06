@@ -9,6 +9,7 @@ import no.fint.xledger.graphql.caches.MerverdiavgiftCache;
 import no.fint.xledger.model.product.Node;
 import no.fint.xledger.okonomi.SellerUtil;
 import no.fint.xledger.utilities.ConvertUtilities;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -38,13 +39,18 @@ public class VareMapper {
                 "systemid",
                 String.valueOf(fakturautsteder.getSystemId().getIdentifikatorverdi())));
 
-        String merverdiavgiftCode = product.getTaxRule().getCode();
-        if (merverdiavgiftCode != null && merverdiavgiftCode.length() > 0) {
+        String merverdiavgiftCode = getTaxRuleCode(product);
+        if (StringUtils.isNotBlank(merverdiavgiftCode)) {
             vare.addMerverdiavgift(Link.with(MerverdiavgiftResource.class,
                     "systemid",
                     String.valueOf(merverdiavgiftCache.getByCode(merverdiavgiftCode).getDbId())));
         }
 
         return vare;
+    }
+
+    private String getTaxRuleCode(Node product) {
+        if (product.getTaxRule() == null) return null;
+        return product.getTaxRule().getCode();
     }
 }
