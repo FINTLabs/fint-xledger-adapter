@@ -21,6 +21,7 @@ public class FakturaService {
 
     public FakturaResource getFaktura(String fakturanummer) {
         Node salesOrder = salesOrdersRepository.getSalesOrderByInvoiceNumber(fakturanummer);
+        if (salesOrder == null) return null;
         return fakturaMapper.toFint(salesOrder);
     }
 }

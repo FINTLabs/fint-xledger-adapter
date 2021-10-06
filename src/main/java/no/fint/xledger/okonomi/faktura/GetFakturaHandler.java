@@ -46,7 +46,8 @@ public class GetFakturaHandler implements Handler {
         FakturaResource faktura = fakturaService.getFaktura(fakturanummer);
 
         if (faktura == null) {
-            response.setResponseStatus(ResponseStatus.ERROR);
+            response.setResponseStatus(ResponseStatus.REJECTED);
+            response.setStatusCode("NOT_FOUND");
             response.setMessage("Faktura not found in Xledger for fakturanummer: " + fakturanummer);
         } else {
             response.addData(faktura);

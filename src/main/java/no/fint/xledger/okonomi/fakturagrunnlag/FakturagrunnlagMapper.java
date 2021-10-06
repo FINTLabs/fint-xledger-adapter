@@ -110,9 +110,14 @@ public class FakturagrunnlagMapper {
         identifikator.setIdentifikatorverdi(salesOrder.getXorder());
         fakturagrunnlag.setOrdrenummer(identifikator);
 
-        fakturagrunnlag.addFaktura(Link.with(FakturaResource.class, "fakturanummer", salesOrder.getInvoiceNumber()));
+        if (hasInvoice(salesOrder))
+            fakturagrunnlag.addFaktura(Link.with(FakturaResource.class, "fakturanummer", salesOrder.getInvoiceNumber()));
 
         return fakturagrunnlag;
+    }
+
+    private boolean hasInvoice(no.fint.xledger.model.salesOrders.Node salesOrder) {
+        return StringUtils.isNoneEmpty(salesOrder.getInvoiceNumber()) && !salesOrder.getInvoiceNumber().equals("0");
     }
 
     public FakturagrunnlagResource toFint(no.fint.xledger.model.invoiceBaseItem.invoiceBaseItems.Node invoiceBaseItem) {
