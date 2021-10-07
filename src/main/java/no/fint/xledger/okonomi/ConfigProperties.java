@@ -48,4 +48,16 @@ public class ConfigProperties {
     @Getter
     @Setter
     private Boolean enableInvoiceStatus = true;
+
+    @Getter
+    @Setter
+    private String enviroment;
+
+    @Getter
+    @Setter
+    private String baseUrl = "https://%s.felleskomponent.no";
+
+    @Getter
+    @Setter
+    private String skoleUrl = "/utdanning/utdanningsprogram/skole/";
 }

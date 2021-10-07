@@ -6,6 +6,7 @@ import no.fint.model.resource.administrasjon.personal.PersonalressursResource;
 import no.fint.model.resource.felles.PersonResource;
 import no.fint.model.resource.utdanning.elev.SkoleressursResource;
 import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
+import no.fint.xledger.FintEndpointsUtil;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -17,13 +18,16 @@ public class FintRepository {
 
     private final ResourceResolverService resolverService;
 
-    public FintRepository(ResourceResolverService resolverService) {
+    private final FintEndpointsUtil fintEndpointsUtil;
+
+    public FintRepository(ResourceResolverService resolverService, FintEndpointsUtil fintEndpointsUtil) {
         this.resolverService = resolverService;
+        this.fintEndpointsUtil = fintEndpointsUtil;
     }
 
     public SkoleResource getSkole(String orgId, String orgNummer) {
         try {
-            return resolverService.resolve(orgId, resolveUrlSkole(orgNummer), SkoleResource.class);
+            return resolverService.resolve(orgId, fintEndpointsUtil.getSkoleByOrganisasjonsnummerUrl(orgNummer), SkoleResource.class);
         } catch (Exception e) {
             // TODO: Better way to handle this? (EntityNotFoundException)
             // org.springframework.web.client.HttpClientErrorException$NotFound: 404 : [{"message":"912912912","exception":"class no.fint.consumer.exceptions.EntityNotFoundException"}]
@@ -48,15 +52,9 @@ public class FintRepository {
         } catch (Exception e) {
             // TODO: Better way to handle this? (EntityNotFoundException)
             // org.springframework.web.client.HttpClientErrorException$NotFound: 404 : [{"message":"912912912","exception":"class no.fint.consumer.exceptions.EntityNotFoundException"}]
-            log.info(e.toString());
+            log.warn(e.toString());
         }
         return null;
-    }
-
-    private String resolveUrlSkole(String orgNummer) {
-        // TODO: Find the proper way to do this (this should not be hardcoded)
-        String endpointConfig = String.format("https://beta.felleskomponent.no/utdanning/utdanningsprogram/skole/organisasjonsnummer/%s", orgNummer);
-        return endpointConfig;
     }
 
     /*
