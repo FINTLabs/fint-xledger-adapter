@@ -26,6 +26,12 @@ public class InvoiceBaseItemRepository extends GraphQLRepository {
 
         //log.info("Query that fails: " + query.getQuery());
         AddInvoiceBaseItemResponse graphQLData = xledgerWebClient.post(AddInvoiceBaseItemResponse.class, query).block();
+
+        if (graphQLData == null || graphQLData.getResult() == null){
+            log.error("Fails to read returdata from Xledger. Probably because it's an error message.");
+            log.error(query.getQuery());
+        }
+
         return graphQLData.getResult().getAddInvoiceBaseItem().getDbId();
     }
 
