@@ -35,6 +35,7 @@ public class FakturaMapper {
         faktura.addFakturagrunnlag(Link.with(FakturagrunnlagResource.class, "ordrenummer", salesOrder.getXorder()));
 
         faktura.setKreditert(false);
+        faktura.setBetalt(salesOrder.getRemainingAmount() <= 0);
 
         return faktura;
     }
