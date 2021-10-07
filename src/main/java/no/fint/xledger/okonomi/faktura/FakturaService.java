@@ -10,18 +10,26 @@ import org.springframework.stereotype.Service;
 @Service
 public class FakturaService {
 
-    private FakturaMapper fakturaMapper;
+    private final FakturaMapper fakturaMapper;
 
     private final SalesOrdersRepository salesOrdersRepository;
 
-    public FakturaService(FakturaMapper fakturaMapper, SalesOrdersRepository salesOrdersRepository) {
+    private final FakturaCache fakturaCache;
+
+    public FakturaService(FakturaMapper fakturaMapper, SalesOrdersRepository salesOrdersRepository, FakturaCache fakturaCache) {
         this.fakturaMapper = fakturaMapper;
         this.salesOrdersRepository = salesOrdersRepository;
+        this.fakturaCache = fakturaCache;
     }
 
     public FakturaResource getFaktura(String fakturanummer) {
-        Node salesOrder = salesOrdersRepository.getSalesOrderByInvoiceNumber(fakturanummer);
-        if (salesOrder == null) return null;
-        return fakturaMapper.toFint(salesOrder);
+        Node salesOrder = fakturaCache.get(fakturanummer);
+
+        if (salesOrder == null) {
+            salesOrder = salesOrdersRepository.getSalesOrderByInvoiceNumber(fakturanummer);
+            fakturaCache.update(fakturanummer, salesOrder);
+        }
+
+        return salesOrder == null ? null : fakturaMapper.toFint(salesOrder);
     }
 }

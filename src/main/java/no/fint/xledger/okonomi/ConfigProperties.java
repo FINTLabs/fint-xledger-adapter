@@ -60,4 +60,8 @@ public class ConfigProperties {
     @Getter
     @Setter
     private String skoleUrl = "/utdanning/utdanningsprogram/skole/";
+
+    @Getter
+    @Setter
+    private int hoursToCacheInvoice = 48;
 }
