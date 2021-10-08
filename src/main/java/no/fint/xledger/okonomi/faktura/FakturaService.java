@@ -3,7 +3,9 @@ package no.fint.xledger.okonomi.faktura;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.model.resource.okonomi.faktura.FakturaResource;
 import no.fint.xledger.graphql.SalesOrdersRepository;
+import no.fint.xledger.graphql.caches.SalesOrderCache;
 import no.fint.xledger.model.salesOrders.Node;
+import no.fint.xledger.okonomi.ConfigProperties;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -14,20 +16,23 @@ public class FakturaService {
 
     private final SalesOrdersRepository salesOrdersRepository;
 
-    private final FakturaCache fakturaCache;
+    private final SalesOrderCache salesOrderCache;
 
-    public FakturaService(FakturaMapper fakturaMapper, SalesOrdersRepository salesOrdersRepository, FakturaCache fakturaCache) {
+    private final ConfigProperties configProperties;
+
+    public FakturaService(FakturaMapper fakturaMapper, SalesOrdersRepository salesOrdersRepository, ConfigProperties configProperties) {
         this.fakturaMapper = fakturaMapper;
         this.salesOrdersRepository = salesOrdersRepository;
-        this.fakturaCache = fakturaCache;
+        this.configProperties = configProperties;
+        salesOrderCache = new SalesOrderCache(configProperties.getHoursToCacheInvoice());
     }
 
     public FakturaResource getFaktura(String fakturanummer) {
-        Node salesOrder = fakturaCache.get(fakturanummer);
+        Node salesOrder = salesOrderCache.get(fakturanummer);
 
         if (salesOrder == null) {
             salesOrder = salesOrdersRepository.getSalesOrderByInvoiceNumber(fakturanummer);
-            fakturaCache.update(fakturanummer, salesOrder);
+            salesOrderCache.update(fakturanummer, salesOrder);
         }
 
         return salesOrder == null ? null : fakturaMapper.toFint(salesOrder);

@@ -1,4 +1,4 @@
-package no.fint.xledger.okonomi.faktura;
+package no.fint.xledger.graphql.caches;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -6,7 +6,7 @@ import no.fint.xledger.model.salesOrders.Node;
 
 import java.time.LocalDateTime;
 
-public class FakturaCacheElement {
+public class SalesOrderCacheElement {
     @Getter
     @Setter
     private Node node;
@@ -15,7 +15,7 @@ public class FakturaCacheElement {
     @Setter
     private LocalDateTime dateTime;
 
-    public FakturaCacheElement(Node node, LocalDateTime dateTime) {
+    public SalesOrderCacheElement(Node node, LocalDateTime dateTime) {
         this.node = node;
         this.dateTime = dateTime;
     }

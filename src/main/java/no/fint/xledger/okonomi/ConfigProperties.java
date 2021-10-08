@@ -64,4 +64,8 @@ public class ConfigProperties {
     @Getter
     @Setter
     private int hoursToCacheInvoice = 48;
+
+    @Getter
+    @Setter
+    private int hoursToCacheSaleOrders = 3;
 }

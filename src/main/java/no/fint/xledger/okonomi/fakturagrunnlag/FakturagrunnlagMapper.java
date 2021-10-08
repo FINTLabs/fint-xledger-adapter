@@ -14,6 +14,7 @@ import no.fint.xledger.graphql.caches.ProductCache;
 import no.fint.xledger.model.invoiceBaseItem.InvoiceBaseItemDTO;
 import no.fint.xledger.model.product.Node;
 import no.fint.xledger.okonomi.ConfigProperties;
+import no.fint.xledger.okonomi.InvoiceUtil;
 import no.fint.xledger.okonomi.SellerUtil;
 import no.fint.xledger.okonomi.vare.VareService;
 import org.apache.commons.lang3.StringUtils;
@@ -110,14 +111,10 @@ public class FakturagrunnlagMapper {
         identifikator.setIdentifikatorverdi(salesOrder.getXorder());
         fakturagrunnlag.setOrdrenummer(identifikator);
 
-        if (hasInvoice(salesOrder))
+        if (InvoiceUtil.hasInvoicedNumber(salesOrder))
             fakturagrunnlag.addFaktura(Link.with(FakturaResource.class, "fakturanummer", salesOrder.getInvoiceNumber()));
 
         return fakturagrunnlag;
-    }
-
-    private boolean hasInvoice(no.fint.xledger.model.salesOrders.Node salesOrder) {
-        return StringUtils.isNoneEmpty(salesOrder.getInvoiceNumber()) && !salesOrder.getInvoiceNumber().equals("0");
     }
 
     public FakturagrunnlagResource toFint(no.fint.xledger.model.invoiceBaseItem.invoiceBaseItems.Node invoiceBaseItem) {

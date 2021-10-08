@@ -6,7 +6,7 @@ import no.fint.model.resource.Link;
 import no.fint.model.resource.okonomi.faktura.FakturaResource;
 import no.fint.model.resource.okonomi.faktura.FakturagrunnlagResource;
 import no.fint.xledger.model.salesOrders.Node;
-import org.apache.commons.lang3.StringUtils;
+import no.fint.xledger.okonomi.InvoiceUtil;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +27,7 @@ public class FakturaMapper {
         Identifikator identifikator = new Identifikator();
         identifikator.setIdentifikatorverdi(salesOrder.getInvoiceNumber());
         faktura.setFakturanummer(identifikator);
-        faktura.setFakturert(isInvoiced(salesOrder));
+        faktura.setFakturert(InvoiceUtil.hasInvoicedNumber(salesOrder));
         faktura.setForfallsdato(parseDate(salesOrder.getDueDate()));
         if (salesOrder.getCustomer() != null) faktura.setMottaker(salesOrder.getCustomer().getDescription());
         faktura.setRestbelop((long) salesOrder.getRemainingAmount() * 100L);
@@ -38,10 +38,6 @@ public class FakturaMapper {
         faktura.setBetalt(salesOrder.getRemainingAmount() <= 0);
 
         return faktura;
-    }
-
-    private boolean isInvoiced(Node salesOrder){
-        return StringUtils.isNoneEmpty(salesOrder.getInvoiceNumber()) && !salesOrder.getInvoiceNumber().equals("0");
     }
 
     private long toOre(String input) {

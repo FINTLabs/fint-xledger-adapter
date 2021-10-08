@@ -1,7 +1,6 @@
 package no.fint.xledger.okonomi.fakturagrunnlag;
 
 import lombok.extern.slf4j.Slf4j;
-import no.fint.model.resource.FintLinks;
 import no.fint.model.resource.Link;
 import no.fint.model.resource.okonomi.faktura.FakturagrunnlagResource;
 import no.fint.model.resource.okonomi.faktura.FakturalinjeResource;
@@ -10,8 +9,10 @@ import no.fint.xledger.fintclient.FintRepository;
 import no.fint.xledger.graphql.InvoiceBaseItemRepository;
 import no.fint.xledger.graphql.SalesOrdersRepository;
 import no.fint.xledger.graphql.caches.InvoiceBaseItemCache;
+import no.fint.xledger.graphql.caches.SalesOrderCache;
 import no.fint.xledger.model.salesOrders.Node;
 import no.fint.xledger.okonomi.ConfigProperties;
+import no.fint.xledger.okonomi.InvoiceUtil;
 import no.fint.xledger.okonomi.fakturautsteder.FakturautstederService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,8 @@ public class FakturagrunnlagService {
 
     private final InvoiceBaseItemCache invoiceBaseItemCache;
 
+    private final SalesOrderCache salesOrderCache;
+
     public FakturagrunnlagService(InvoiceBaseItemRepository invoiceBaseItemRepository, CustomerService customerService, FakturagrunnlagMapper mapper, FintRepository fintRepository, ConfigProperties configProperties, FakturautstederService fakturautstederService, SalesOrdersRepository salesOrdersRepository, InvoiceBaseItemCache invoiceBaseItemCache) {
         this.invoiceBaseItemRepository = invoiceBaseItemRepository;
         this.customerService = customerService;
@@ -47,6 +50,7 @@ public class FakturagrunnlagService {
         this.fakturautstederService = fakturautstederService;
         this.salesOrdersRepository = salesOrdersRepository;
         this.invoiceBaseItemCache = invoiceBaseItemCache;
+        salesOrderCache = new SalesOrderCache(configProperties.getHoursToCacheSaleOrders());
     }
 
     public void addFakturagrunnlag(FakturagrunnlagResource fakturagrunnlagResource) throws Exception {
@@ -69,25 +73,31 @@ public class FakturagrunnlagService {
         log.info("FAKTURAGRUNNLAG CREATED: " + fakturagrunnlagResource.getOrdrenummer().getIdentifikatorverdi());
     }
 
+    // todo flytte til FintRepository?
     private FakturautstederResource getFakturautsteder(List<Link> links) throws IllegalArgumentException {
         String href = links.get(0).getHref();
         String id = StringUtils.substringAfterLast(href, "/");
 
-        FakturautstederResource fakturautsteder =
-                fakturautstederService
-                        .getFakturautstedere()
-                        .stream()
-                        .filter(f -> f.getSystemId().getIdentifikatorverdi().equals(id))
-                        .findFirst()
-                        .orElseThrow(() -> new IllegalArgumentException("Didn't find fakturautsteder with id " + id));
-
-        return fakturautsteder;
+        return fakturautstederService
+                .getFakturautstedere()
+                .stream()
+                .filter(f -> f.getSystemId().getIdentifikatorverdi().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Didn't find fakturautsteder with id " + id));
     }
 
     public FakturagrunnlagResource getFakturagrunnlag(String ordrenummer) {
         log.info("getFakturagrunnlag for " + ordrenummer);
-        Node salesOrder = salesOrdersRepository.getSalesOrderByXorder(ordrenummer);
-        if (salesOrder != null) return mapper.toFint(salesOrder);
+
+        Node salesOrder = salesOrderCache.get(ordrenummer);
+        // don't want to refetch order if it already has invoiceNo. If invoiceNo is missing, update from Xledger to check for updates
+        if (salesOrder != null && InvoiceUtil.hasInvoicedNumber(salesOrder)) return mapper.toFint(salesOrder);
+
+        salesOrder = salesOrdersRepository.getSalesOrderByXorder(ordrenummer);
+        if (salesOrder != null) {
+            salesOrderCache.update(ordrenummer, salesOrder);
+            return mapper.toFint(salesOrder);
+        }
 
         no.fint.xledger.model.invoiceBaseItem.invoiceBaseItems.Node invoiceBaseItem = invoiceBaseItemCache.getByXorder(ordrenummer);
         if (invoiceBaseItem != null) return mapper.toFint(invoiceBaseItem);
