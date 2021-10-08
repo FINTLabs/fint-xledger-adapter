@@ -38,14 +38,14 @@ public abstract class CachedHandlerService {
 
     protected abstract void refreshData();
 
-    private Boolean isRunning() {
+    private boolean isRunning() {
         if (lastRunStarted == null) return false;
 
         Duration duration = Duration.between(lastRunStarted, LocalDateTime.now());
         return duration.getSeconds() < Duration.ofHours(maxRunningHours).getSeconds();
     }
 
-    private Boolean hasBeenUpdatedLatly(){
+    private boolean hasBeenUpdatedLatly(){
         if (lastRun == null) return false;
 
         Duration duration = Duration.between(lastRun, LocalDateTime.now());

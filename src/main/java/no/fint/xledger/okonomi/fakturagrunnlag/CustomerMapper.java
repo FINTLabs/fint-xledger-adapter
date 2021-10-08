@@ -42,7 +42,7 @@ public class CustomerMapper {
         return customer;
     }
 
-    public static String personnavnToString(Personnavn navn, Boolean surenameFirst) {
+    public static String personnavnToString(Personnavn navn, boolean surenameFirst) {
         if (navn == null) return null;
 
         String result = "";
