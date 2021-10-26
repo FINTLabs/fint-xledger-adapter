@@ -3,9 +3,9 @@ package no.fint.xledger.okonomi.vare;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.model.resource.okonomi.faktura.FakturautstederResource;
 import no.fint.model.resource.okonomi.kodeverk.VareResource;
+import no.fint.xledger.fintclient.FintRepository;
 import no.fint.xledger.graphql.caches.ProductCache;
 import no.fint.xledger.graphql.caches.SalgsordregruppeCache;
-import no.fint.xledger.model.product.Node;
 import no.fint.xledger.okonomi.CachedHandlerService;
 import no.fint.xledger.okonomi.ConfigProperties;
 import no.fint.xledger.okonomi.SellerUtil;
@@ -13,8 +13,9 @@ import no.fint.xledger.okonomi.fakturautsteder.FakturautstederService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -58,22 +59,29 @@ public class VareService extends CachedHandlerService {
     public void refreshData() {
         log.info("Refreshing Vare...");
 
-        ArrayList result = new ArrayList<>();
+        List<VareResource> result = fakturautstederService
+                .getFakturautstedere()
+                .stream()
+                .flatMap(this::toVareResource)
+                .collect(Collectors.toList());
 
-        for (FakturautstederResource fakturautsteder : fakturautstederService.getFakturautstedere()) {
-            // Filtere pr fakturautsteder
-            // Vare."code": "500100-1011",
-
-            String salgsordregruppeDbId = SellerUtil.extractSalgsordregruppeDbId(fakturautsteder.getSystemId().getIdentifikatorverdi());
-            String salgsordregruppeCode = salgsordregruppeCache.getCodeByDbId(salgsordregruppeDbId);
-
-            for (Node vare : cache.filterVarerByCode(salgsordregruppeCode, configProperties.getDigistToCompareSalgsordregruppeAndProduct())) {
-                result.add(mapper.toFint(vare, fakturautsteder));
-            }
-        }
 
         log.info("Found " + result.size() + " varer");
         this.varer = result;
         log.info("End refreshing Vare");
+    }
+
+    private Stream<VareResource> toVareResource(FakturautstederResource fakturautsteder) {
+        return cache.filterVarerByCode(getSalgsordregruppeCode(fakturautsteder), configProperties.getDigistToCompareSalgsordregruppeAndProduct())
+                .stream()
+                .map(node -> mapper.toFint(node, fakturautsteder));
+    }
+
+    private String getSalgsordregruppeCode(FakturautstederResource fakturautsteder) {
+        return salgsordregruppeCache.getCodeByDbId(
+                SellerUtil.extractSalgsordregruppeDbId(
+                        fakturautsteder.getSystemId().getIdentifikatorverdi()
+                )
+        );
     }
 }

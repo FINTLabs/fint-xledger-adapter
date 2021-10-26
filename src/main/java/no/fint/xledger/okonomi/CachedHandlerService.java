@@ -14,29 +14,35 @@ public abstract class CachedHandlerService {
     private LocalDateTime lastRun;
 
     public void refreshIfNeeded() {
-        // If it has never run
-        if (lastRunStarted == null) {
-            lastRunStarted = LocalDateTime.now();
-            refreshData();
-            return;
+
+        if (isRefreshNeeded()) {
+            refresh();
         }
+    }
 
-        if (isRunning()) return;
-
-        // If the clock is not between 07:00 and 15:59
-        if (LocalDateTime.now().getHour() >= dontRunAfter) return;
-        if (LocalDateTime.now().getHour() < dontRunBefore) return;
-
-        // If it has been updated last 3 hours
-        if (hasBeenUpdatedLatly()) return;
-
-        // If not, refresh
+    private void refresh() {
         lastRunStarted = LocalDateTime.now();
         refreshData();
         lastRun = LocalDateTime.now();
     }
 
+    private boolean isRefreshNeeded() {
+        return hasNeverRan() && isWithinWorkingHours() && isNotRunning() && hasNotBeenUpdatedLately();
+    }
+
+    private boolean isWithinWorkingHours() {
+        return LocalDateTime.now().getHour() >= dontRunBefore && LocalDateTime.now().getHour() < dontRunAfter;
+    }
+
+    private boolean hasNeverRan() {
+        return lastRunStarted == null;
+    }
+
     protected abstract void refreshData();
+
+    private boolean isNotRunning() {
+        return !isRunning();
+    }
 
     private Boolean isRunning() {
         if (lastRunStarted == null) return false;
@@ -45,7 +51,11 @@ public abstract class CachedHandlerService {
         return duration.getSeconds() < Duration.ofHours(maxRunningHours).getSeconds();
     }
 
-    private Boolean hasBeenUpdatedLatly(){
+    private boolean hasNotBeenUpdatedLately() {
+        return !hasBeenUpdatedLately();
+    }
+
+    private Boolean hasBeenUpdatedLately() {
         if (lastRun == null) return false;
 
         Duration duration = Duration.between(lastRun, LocalDateTime.now());

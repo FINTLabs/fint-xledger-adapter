@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -32,21 +33,20 @@ public class InvoiceBaseItemRepository extends GraphQLRepository {
             log.error(query.getQuery());
         }
 
-        return graphQLData.getResult().getAddInvoiceBaseItem().getDbId();
+        return Objects.requireNonNull(graphQLData).getResult().getAddInvoiceBaseItem().getDbId();
     }
 
     public List<no.fint.xledger.model.invoiceBaseItem.invoiceBaseItems.Node> get() {
         GraphQLQuery query = getGetQuery();
         InvoiceBaseItemsResponse graphQLData = xledgerWebClient.post(InvoiceBaseItemsResponse.class, query).block();
-        List<no.fint.xledger.model.invoiceBaseItem.invoiceBaseItems.Node> nodes = graphQLData
+
+        return Objects.requireNonNull(graphQLData)
                 .getResult()
                 .getInvoiceBaseItems()
                 .getEdges()
                 .stream()
                 .map(no.fint.xledger.model.invoiceBaseItem.invoiceBaseItems.EdgesItem::getNode)
                 .collect(Collectors.toList());
-
-        return nodes;
     }
 
     private GraphQLQuery getAddQuery(InvoiceBaseItemDTO invoiceItem) {
@@ -98,7 +98,7 @@ public class InvoiceBaseItemRepository extends GraphQLRepository {
     }
 
     private GraphQLQuery getGetQuery() {
-        return new GraphQLQuery(String.format("{\n" +
+        return new GraphQLQuery("{\n" +
                 "  invoiceBaseItems(last: 500) {\n" +
                 "    edges {\n" +
                 "      node{\n" +
@@ -114,6 +114,6 @@ public class InvoiceBaseItemRepository extends GraphQLRepository {
                 "      }\n" +
                 "    }\n" +
                 "  }\n" +
-                "}\n"));
+                "}\n");
     }
 }

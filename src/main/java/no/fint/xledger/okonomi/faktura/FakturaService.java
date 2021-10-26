@@ -18,12 +18,9 @@ public class FakturaService {
 
     private final SalesOrderCache salesOrderCache;
 
-    private final ConfigProperties configProperties;
-
     public FakturaService(FakturaMapper fakturaMapper, SalesOrdersRepository salesOrdersRepository, ConfigProperties configProperties) {
         this.fakturaMapper = fakturaMapper;
         this.salesOrdersRepository = salesOrdersRepository;
-        this.configProperties = configProperties;
         salesOrderCache = new SalesOrderCache(configProperties.getHoursToCacheInvoice());
     }
 

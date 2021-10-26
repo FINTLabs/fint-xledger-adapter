@@ -7,6 +7,7 @@ import no.fint.xledger.model.customer.companies.CompaniesResponse;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Repository
@@ -21,7 +22,7 @@ public class CustomerRepository extends GraphQLRepository {
         GraphQLQuery query = getCompaniesQuery(fodselsnummer);
         CompaniesResponse graphQLData = xledgerWebClient.post(CompaniesResponse.class, query).block();
 
-        List<no.fint.xledger.model.customer.companies.EdgesItem> edgesItems = graphQLData.getResult().getCompanies().getEdges();
+        List<no.fint.xledger.model.customer.companies.EdgesItem> edgesItems = Objects.requireNonNull(graphQLData).getResult().getCompanies().getEdges();
         if (edgesItems == null || edgesItems.size() == 0) return 0;
 
         if (edgesItems.size() > 1) {
@@ -34,14 +35,14 @@ public class CustomerRepository extends GraphQLRepository {
     public int addCompany(String companyNumber, String ownerDbId) {
         GraphQLQuery query = addCompanyQuery(companyNumber, ownerDbId);
         AddCompanyResponse graphQLData = xledgerWebClient.post(AddCompanyResponse.class, query).block();
-        return graphQLData.getResult().getAddCompany().getDbId();
+        return Objects.requireNonNull(graphQLData).getResult().getAddCompany().getDbId();
     }
 
     public int getCustomerDbId(String companyDbId) {
         GraphQLQuery query = getCustomerQuery(companyDbId);
         no.fint.xledger.model.customer.customers.CustomersResponse graphQLData = xledgerWebClient.post(no.fint.xledger.model.customer.customers.CustomersResponse.class, query).block();
 
-        List<no.fint.xledger.model.customer.customers.EdgesItem> edgesItems = graphQLData.getResult().getCustomers().getEdges();
+        List<no.fint.xledger.model.customer.customers.EdgesItem> edgesItems = Objects.requireNonNull(graphQLData).getResult().getCustomers().getEdges();
         if (edgesItems == null || edgesItems.size() == 0) return 0;
 
         if (edgesItems.size() > 1) {
@@ -54,13 +55,13 @@ public class CustomerRepository extends GraphQLRepository {
     public int addCustomer(CustomerDTO customerDTO) {
         GraphQLQuery query = addCustomerQuery(customerDTO);
         no.fint.xledger.model.customer.addCustomer.AddCustomerResponse graphQLData = xledgerWebClient.post(no.fint.xledger.model.customer.addCustomer.AddCustomerResponse.class, query).block();
-        return graphQLData.getResult().getAddCustomer().getDbId();
+        return Objects.requireNonNull(graphQLData).getResult().getAddCustomer().getDbId();
     }
 
     public int updateCustomer(CustomerDTO customerDTO, int customerDbId) {
         GraphQLQuery query = updateCustomerQuery(customerDTO, customerDbId);
         no.fint.xledger.model.customer.updateCustomer.UpdateCustomerResponse graphQLData = xledgerWebClient.post(no.fint.xledger.model.customer.updateCustomer.UpdateCustomerResponse.class, query).block();
-        return graphQLData.getResult().getUpdateCustomer().getDbId();
+        return Objects.requireNonNull(graphQLData).getResult().getUpdateCustomer().getDbId();
     }
 
     private GraphQLQuery getCompaniesQuery(String fodselsnummer) {
