@@ -41,24 +41,16 @@ public abstract class CachedHandlerService {
     protected abstract void refreshData();
 
     private boolean isNotRunning() {
-        return !isRunning();
-    }
-
-    private Boolean isRunning() {
-        if (lastRunStarted == null) return false;
+        if (lastRunStarted == null) return true;
 
         Duration duration = Duration.between(lastRunStarted, LocalDateTime.now());
-        return duration.getSeconds() < Duration.ofHours(maxRunningHours).getSeconds();
+        return duration.getSeconds() >= Duration.ofHours(maxRunningHours).getSeconds();
     }
 
     private boolean hasNotBeenUpdatedLately() {
-        return !hasBeenUpdatedLately();
-    }
-
-    private Boolean hasBeenUpdatedLately() {
-        if (lastRun == null) return false;
+        if (lastRun == null) return true;
 
         Duration duration = Duration.between(lastRun, LocalDateTime.now());
-        return duration.getSeconds() < Duration.ofHours(hoursBetweenUpdate).getSeconds();
+        return duration.getSeconds() >= Duration.ofHours(hoursBetweenUpdate).getSeconds();
     }
 }
