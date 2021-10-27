@@ -5,7 +5,6 @@ import no.fint.model.resource.Link;
 import no.fint.model.resource.administrasjon.personal.PersonalressursResource;
 import no.fint.model.resource.okonomi.faktura.FakturautstederResource;
 import no.fint.model.resource.utdanning.elev.SkoleressursResource;
-import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
 import no.fint.xledger.fintclient.FintRepository;
 import no.fint.xledger.graphql.caches.ContactCache;
 import no.fint.xledger.graphql.caches.SalgsordregruppeCache;
@@ -13,15 +12,12 @@ import no.fint.xledger.model.contacts.Contact;
 import no.fint.xledger.model.objectValues.Node;
 import no.fint.xledger.okonomi.CachedHandlerService;
 import no.fint.xledger.okonomi.ConfigProperties;
-import org.jooq.lambda.tuple.Tuple;
-import org.jooq.lambda.tuple.Tuple2;
-import org.jooq.lambda.tuple.Tuple3;
-import org.jooq.lambda.tuple.Tuple4;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -74,72 +70,43 @@ public class FakturautstederService extends CachedHandlerService {
                 .stream()
                 .map(addOrganisationNumber())
                 .filter(hasOrganisationNumber())
-                .map(addSchool())
+                .peek(addSchool())
                 .filter(hasSchool())
-                .map(addSkoleressurs())
-                .peek(t -> log.info("School " + t.v3.getNavn() + " contains " + t.v4.size() + " skoleressurser"))
-                .flatMap(t -> findMatchingContacts(t.v4)
+                .peek(addSkoleressurs())
+                .peek(args -> log.info("School " + args.getSkoleResource().getNavn() + " contains " + args.getSkoleressursResources().size() + " skoleressurser"))
+                .flatMap(args -> findMatchingContacts(args.getSkoleressursResources())
                         .stream()
-                        .peek(matchingContact -> log.debug(t.v3.getNavn() + " contact match: " + matchingContact.getName()))
-                        .map(matchingContact -> mapper.toFint(t.v2, t.v3, matchingContact, t.v1)))
+                        .peek(matchingContact -> log.debug(args.getSkoleResource().getNavn() + " contact match: " + matchingContact.getName()))
+                        .map(matchingContact -> mapper.toFint(args.getSalgsordregruppe(), args.getSkoleResource(), matchingContact, args.getOrgnummer())))
                 .collect(Collectors.toList());
-
-//        for (Node salgsordregruppe : salgsordregrupper.get()) {
-//            String orgNo = extractOrgnummerFromDescription(salgsordregruppe.getDescription());
-//            if (orgNo.length() == 0) continue;
-//
-//            SkoleResource skoleResource = fintRepository.getSkole(configProperties.getOrganization(), orgNo);
-//            if (skoleResource == null) continue;
-//
-//            List<SkoleressursResource> skoleressursResources = fintRepository.getSkoleressurser(configProperties.getOrganization(), skoleResource.getSkoleressurs());
-//            log.info("School " + skoleResource.getNavn() + " contains " + skoleressursResources.size() + " skoleressurser");
-//
-//            findMatchingContacts(skoleressursResources)
-//                    .stream()
-//                    .peek(matchingContact -> log.debug(skoleResource.getNavn() + " contact match: " + matchingContact.getName()))
-//                    .map(matchingContact -> mapper.toFint(salgsordregruppe, skoleResource, matchingContact, orgNo))
-//                    .forEach(result::add);
-//
-////            for (Contact matchingContact : findMatchingContacts(skoleressursResources)) {
-////                result.add(mapper.toFint(salgsordregruppe, skoleResource, matchingContact, orgNo));
-////                log.debug(skoleResource.getNavn() + " contact match: " + matchingContact.getName());
-////            }
-//        }
 
         log.info("Found " + result.size() + " fakturautstedere");
         this.fakturautstedere = result;
         log.debug("End refreshing Fakturautstedere");
     }
 
-    private Function<Node, Tuple2<String, Node>> addOrganisationNumber() {
-        return salgsordregruppe -> Tuple.tuple(
-                extractOrgnummerFromDescription(salgsordregruppe.getDescription()),
-                salgsordregruppe
-        );
+    private Function<Node, FakturautstederMapperArgs> addOrganisationNumber() {
+        return salgsordregruppe ->
+                new FakturautstederMapperArgs(
+                        salgsordregruppe,
+                        extractOrgnummerFromDescription(salgsordregruppe.getDescription())
+                );
     }
 
-    private Function<Tuple3<String, Node, SkoleResource>, Tuple4<String, Node, SkoleResource, List<SkoleressursResource>>> addSkoleressurs() {
-        return t -> Tuple.tuple(
-                t.v1,
-                t.v2,
-                t.v3,
-                fintRepository.getSkoleressurser(configProperties.getOrganization(), t.v3.getSkoleressurs())
-        );
+    private Consumer<FakturautstederMapperArgs> addSkoleressurs() {
+        return args -> args.setSkoleressursResources(fintRepository.getSkoleressurser(configProperties.getOrganization(), args.getSkoleResource().getSkoleressurs()));
     }
 
-    private Predicate<Tuple3<String, Node, SkoleResource>> hasSchool() {
-        return t -> t.v3 != null;
+    private Predicate<FakturautstederMapperArgs> hasSchool() {
+        return args -> args.getSkoleResource() != null;
     }
 
-    private Function<Tuple2<String, Node>, Tuple3<String, Node, SkoleResource>> addSchool() {
-        return t -> Tuple.tuple(
-                t.v1,
-                t.v2,
-                fintRepository.getSkole(configProperties.getOrganization(), t.v1));
+    private Consumer<FakturautstederMapperArgs> addSchool() {
+        return args -> args.setSkoleResource(fintRepository.getSkole(configProperties.getOrganization(), args.getOrgnummer()));
     }
 
-    private Predicate<Tuple2<String, Node>> hasOrganisationNumber() {
-        return t -> t.v1.length() > 0;
+    private Predicate<FakturautstederMapperArgs> hasOrganisationNumber() {
+        return args -> args.getOrgnummer().length() > 0;
     }
 
     private List<Contact> findMatchingContacts(List<SkoleressursResource> skoleressursResources) {
