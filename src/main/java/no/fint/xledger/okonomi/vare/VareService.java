@@ -3,7 +3,6 @@ package no.fint.xledger.okonomi.vare;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.model.resource.okonomi.faktura.FakturautstederResource;
 import no.fint.model.resource.okonomi.kodeverk.VareResource;
-import no.fint.xledger.fintclient.FintRepository;
 import no.fint.xledger.graphql.caches.ProductCache;
 import no.fint.xledger.graphql.caches.SalgsordregruppeCache;
 import no.fint.xledger.okonomi.CachedHandlerService;
@@ -22,11 +21,12 @@ import java.util.stream.Stream;
 public class VareService extends CachedHandlerService {
 
     private final ProductCache cache;
+
     private final VareMapper mapper;
 
-    private FakturautstederService fakturautstederService;
+    private final FakturautstederService fakturautstederService;
 
-    private SalgsordregruppeCache salgsordregruppeCache;
+    private final SalgsordregruppeCache salgsordregruppeCache;
 
     private final ConfigProperties configProperties;
 

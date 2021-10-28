@@ -31,7 +31,7 @@ public class CustomerService {
         PersonResource person = fintRepository.getPerson(configProperties.getOrganization(), personLinks);
         int companyDbId = customerRepository.getCompanyDbId(person.getFodselsnummer().getIdentifikatorverdi());
 
-        int customerDbId = 0;
+        int customerDbId;
 
         if (companyDbId == 0) {
             // add person

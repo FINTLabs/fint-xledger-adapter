@@ -5,7 +5,6 @@ import no.fint.model.resource.Link;
 import no.fint.model.resource.okonomi.faktura.FakturagrunnlagResource;
 import no.fint.model.resource.okonomi.faktura.FakturalinjeResource;
 import no.fint.model.resource.okonomi.faktura.FakturautstederResource;
-import no.fint.xledger.fintclient.FintRepository;
 import no.fint.xledger.graphql.InvoiceBaseItemRepository;
 import no.fint.xledger.graphql.SalesOrdersRepository;
 import no.fint.xledger.graphql.caches.InvoiceBaseItemCache;
@@ -29,10 +28,6 @@ public class FakturagrunnlagService {
 
     private final FakturagrunnlagMapper mapper;
 
-    private final FintRepository fintRepository;
-
-    private final ConfigProperties configProperties;
-
     private final FakturautstederService fakturautstederService;
 
     private final SalesOrdersRepository salesOrdersRepository;
@@ -41,12 +36,10 @@ public class FakturagrunnlagService {
 
     private final SalesOrderCache salesOrderCache;
 
-    public FakturagrunnlagService(InvoiceBaseItemRepository invoiceBaseItemRepository, CustomerService customerService, FakturagrunnlagMapper mapper, FintRepository fintRepository, ConfigProperties configProperties, FakturautstederService fakturautstederService, SalesOrdersRepository salesOrdersRepository, InvoiceBaseItemCache invoiceBaseItemCache) {
+    public FakturagrunnlagService(InvoiceBaseItemRepository invoiceBaseItemRepository, CustomerService customerService, FakturagrunnlagMapper mapper, ConfigProperties configProperties, FakturautstederService fakturautstederService, SalesOrdersRepository salesOrdersRepository, InvoiceBaseItemCache invoiceBaseItemCache) {
         this.invoiceBaseItemRepository = invoiceBaseItemRepository;
         this.customerService = customerService;
         this.mapper = mapper;
-        this.fintRepository = fintRepository;
-        this.configProperties = configProperties;
         this.fakturautstederService = fakturautstederService;
         this.salesOrdersRepository = salesOrdersRepository;
         this.invoiceBaseItemCache = invoiceBaseItemCache;

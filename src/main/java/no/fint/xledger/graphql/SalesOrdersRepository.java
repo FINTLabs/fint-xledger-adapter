@@ -7,6 +7,7 @@ import no.fint.xledger.model.salesOrders.SalesOrdersResponse;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Repository
@@ -29,7 +30,7 @@ public class SalesOrdersRepository extends GraphQLRepository {
         GraphQLQuery query = getQuery(filterValue, filterField);
         SalesOrdersResponse graphQLData = xledgerWebClient.post(SalesOrdersResponse.class, query).block();
 
-        List<EdgesItem> edgesItems = graphQLData.getResult().getSalesOrders().getEdges();
+        List<EdgesItem> edgesItems = Objects.requireNonNull(graphQLData).getResult().getSalesOrders().getEdges();
         if (edgesItems == null || edgesItems.size() == 0) return null;
 
         if (edgesItems.size() > 1) {

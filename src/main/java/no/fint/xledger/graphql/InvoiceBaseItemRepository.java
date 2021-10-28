@@ -3,8 +3,6 @@ package no.fint.xledger.graphql;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.xledger.model.invoiceBaseItem.InvoiceBaseItemDTO;
 import no.fint.xledger.model.invoiceBaseItem.addInvoiceBaseItem.AddInvoiceBaseItemResponse;
-import no.fint.xledger.model.invoiceBaseItem.invoiceBaseItems.EdgesItem;
-import no.fint.xledger.model.invoiceBaseItem.invoiceBaseItems.InvoiceBaseItems;
 import no.fint.xledger.model.invoiceBaseItem.invoiceBaseItems.InvoiceBaseItemsResponse;
 import org.springframework.stereotype.Repository;
 
@@ -28,7 +26,7 @@ public class InvoiceBaseItemRepository extends GraphQLRepository {
         //log.info("Query that fails: " + query.getQuery());
         AddInvoiceBaseItemResponse graphQLData = xledgerWebClient.post(AddInvoiceBaseItemResponse.class, query).block();
 
-        if (graphQLData == null || graphQLData.getResult() == null){
+        if (graphQLData == null || graphQLData.getResult() == null) {
             log.error("Fails to read returdata from Xledger. Probably because it's an error message.");
             log.error(query.getQuery());
         }

@@ -43,7 +43,7 @@ public class FakturagrunnlagMapper {
         this.contactCache = contactCache;
     }
 
-    public InvoiceBaseItemDTO toXledger(FakturalinjeResource linje, int subledgerDbId, FakturautstederResource fakturautsteder, FakturagrunnlagResource fakturagrunnlag, int lineNumber) throws Exception {
+    public InvoiceBaseItemDTO toXledger(FakturalinjeResource linje, int subledgerDbId, FakturautstederResource fakturautsteder, FakturagrunnlagResource fakturagrunnlag, int lineNumber) {
         InvoiceBaseItemDTO dto = new InvoiceBaseItemDTO();
         dto.setSubledgerDbId(String.valueOf(subledgerDbId));
 
@@ -80,7 +80,7 @@ public class FakturagrunnlagMapper {
         return dto;
     }
 
-    private VareResource getVare(List<Link> links) throws Exception {
+    private VareResource getVare(List<Link> links) {
         String href = links.get(0).getHref();
         String id = StringUtils.substringAfterLast(href, "/");
         return vareService

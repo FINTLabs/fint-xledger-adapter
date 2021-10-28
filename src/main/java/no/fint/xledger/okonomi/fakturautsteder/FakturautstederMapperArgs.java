@@ -26,7 +26,7 @@ public class FakturautstederMapperArgs {
     private List<SkoleressursResource> skoleressursResources;
 
     public FakturautstederMapperArgs(Node salgsordregruppe, String orgnummer) {
-        salgsordregruppe = salgsordregruppe;
-        orgnummer = orgnummer;
+        this.salgsordregruppe = salgsordregruppe;
+        this.orgnummer = orgnummer;
     }
 }

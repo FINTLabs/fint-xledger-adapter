@@ -1,9 +1,7 @@
 package no.fint.xledger.okonomi.mva;
 
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.model.resource.okonomi.kodeverk.MerverdiavgiftResource;
-import no.fint.model.resource.okonomi.kodeverk.VareResource;
 import no.fint.xledger.graphql.caches.MerverdiavgiftCache;
 import no.fint.xledger.okonomi.CachedHandlerService;
 import org.springframework.scheduling.annotation.Scheduled;

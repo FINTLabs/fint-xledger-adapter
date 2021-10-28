@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class VareMapper {
 
-    private MerverdiavgiftCache merverdiavgiftCache;
+    private final MerverdiavgiftCache merverdiavgiftCache;
 
     public VareMapper(MerverdiavgiftCache merverdiavgiftCache) {
         this.merverdiavgiftCache = merverdiavgiftCache;
