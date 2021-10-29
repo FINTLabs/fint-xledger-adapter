@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.fint.model.resource.okonomi.kodeverk.MerverdiavgiftResource;
 import no.fint.xledger.graphql.caches.MerverdiavgiftCache;
 import no.fint.xledger.okonomi.CachedHandlerService;
+import no.fint.xledger.okonomi.ConfigProperties;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +19,8 @@ public class MerverdiavgiftService extends CachedHandlerService {
     private final MerverdiavgiftMapper mapper;
     private List<MerverdiavgiftResource> mva;
 
-    public MerverdiavgiftService(MerverdiavgiftCache cache, MerverdiavgiftMapper mvaFactory) {
+    public MerverdiavgiftService(MerverdiavgiftCache cache, MerverdiavgiftMapper mvaFactory, ConfigProperties configProperties) {
+        super(configProperties);
         this.cache = cache;
         this.mapper = mvaFactory;
     }

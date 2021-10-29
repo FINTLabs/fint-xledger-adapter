@@ -68,4 +68,8 @@ public class ConfigProperties {
     @Getter
     @Setter
     private int hoursToCacheSaleOrders = 3;
+
+    @Getter
+    @Setter
+    private ConfigFintCache fintCache;
 }

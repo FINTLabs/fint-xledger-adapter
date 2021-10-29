@@ -5,13 +5,20 @@ import java.time.LocalDateTime;
 
 public abstract class CachedHandlerService {
 
-    private final int maxRunningHours = 2;
-    private final int dontRunAfter = 16;
-    private final int dontRunBefore = 7;
-    private final int hoursBetweenUpdate = 3;
+    private final int maxRunningHours;
+    private final int dontRunAfter;
+    private final int dontRunBefore;
+    private final int hoursBetweenUpdate;
 
     private LocalDateTime lastRunStarted;
     private LocalDateTime lastRun;
+
+    public CachedHandlerService(ConfigProperties configProperties) {
+        maxRunningHours = configProperties.getFintCache().getMaxRunningHours();
+        dontRunAfter = configProperties.getFintCache().getDontRunAfter();
+        dontRunBefore = configProperties.getFintCache().getDontRunBefore();
+        hoursBetweenUpdate = configProperties.getFintCache().getHoursBetweenUpdate();
+    }
 
     public void refreshIfNeeded() {
 
