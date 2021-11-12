@@ -10,6 +10,4 @@ import org.springframework.stereotype.Component;
 @Data
 public class FintClient {
     private ResourceOwnerPasswordResourceDetails details;
-
-    // TODO: Validate that all setting are set
 }

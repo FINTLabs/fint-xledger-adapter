@@ -12,6 +12,7 @@ import no.fint.xledger.model.contacts.Contact;
 import no.fint.xledger.model.objectValues.Node;
 import no.fint.xledger.okonomi.CachedHandlerService;
 import no.fint.xledger.okonomi.ConfigProperties;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -118,7 +119,6 @@ public class FakturautstederService extends CachedHandlerService {
 
             List<Link> links = skoleressurs.getPersonalressurs();
             if (links.size() == 0) continue;
-            // TODO Avklare hvorfor det er en liste
 
             PersonalressursResource personalressursResource = fintRepository.getPersonalressurs(configProperties.getOrganization(), links.get(0));
             if (personalressursResource == null) {
@@ -158,7 +158,7 @@ public class FakturautstederService extends CachedHandlerService {
         // Example input: 91071 Kvadraturen videregående skole (974 595 117)
         // Example output: 974595117
 
-        if (salgsordregruppeDescription == null || salgsordregruppeDescription.length() == 0) return "";
+        if (StringUtils.isBlank(salgsordregruppeDescription)) return "";
 
         int start = salgsordregruppeDescription.lastIndexOf('(');
         int end = salgsordregruppeDescription.lastIndexOf(')');

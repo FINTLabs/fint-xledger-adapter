@@ -16,7 +16,6 @@ public class ResourceResolverService {
 
     public ResourceResolverService(FintClient fintClient) {
         oAuth2RestTemplate = new OAuth2RestTemplate(fintClient.getDetails());
-        // Todo: validates cradentials??
     }
 
     public <T> T resolve(String orgid, String uri, Class<T> clazz) {

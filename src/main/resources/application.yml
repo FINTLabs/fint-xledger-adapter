@@ -1,7 +1,39 @@
 server:
   port: 8091
-
 fint:
+  oath:
+    enabled: true
+    username: ''
+    password: ''
+    access-token-uri: 'https://idp.felleskomponent.no/nidp/oauth/nam/token'
+    client-id: ''
+    client-secret: ''
+    scope: 'fint-client'
+    organizations: ''
+  xledger:
+    ownerDbId: ''
+    invoiceLayoutDbId: ''
+    currencyDbId: ''
+    digistToCompareSalgsordregruppeAndProduct: ''
+    graphql:
+      token: ''
+      pageSize: 500
+    mva:
+      HIGH_LEVEL: 250
+      MID_LEVEL: 150
+      LOW_LEVEL: 120
+      SPECIAL_RATE: 111
+      ZERO_LEVEL: 0
+  client:
+    details:
+      username: ''
+      password: ''
+      clientId: ''
+      clientSecret: ''
+      scope: 'fint-client'
+      accessTokenUri: 'https://idp.felleskomponent.no/nidp/oauth/nam/token'
+      assetId: ''
+      enabled: 'true'
   adapter:
     endpoints:
       sse: /sse/%s
@@ -17,3 +49,4 @@ fint:
 #security:
 #  basic:
 #    enabled: false
+
