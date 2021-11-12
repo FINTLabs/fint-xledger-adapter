@@ -20,7 +20,7 @@ public class MerverdiavgiftService extends CachedHandlerService {
     private List<MerverdiavgiftResource> mva;
 
     public MerverdiavgiftService(MerverdiavgiftCache cache, MerverdiavgiftMapper mvaFactory, ConfigProperties configProperties) {
-        super(configProperties);
+        super(configProperties.getFintCache());
         this.cache = cache;
         this.mapper = mvaFactory;
     }
@@ -45,6 +45,5 @@ public class MerverdiavgiftService extends CachedHandlerService {
                 .map(mapper::toFint)
                 .collect(Collectors.toList());
         log.info("End refreshing Merverdiavgift");
-
     }
 }

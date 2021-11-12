@@ -37,7 +37,7 @@ public class FakturautstederService extends CachedHandlerService {
     private List<FakturautstederResource> fakturautstedere;
 
     public FakturautstederService(SalgsordregruppeCache salgsordregrupper, ContactCache contacts, FakturautstederMapper mapper, FintRepository fintRepository, ConfigProperties configProperties) {
-        super(configProperties);
+        super(configProperties.getFintCache());
         this.salgsordregrupper = salgsordregrupper;
         this.contacts = contacts;
         this.mapper = mapper;

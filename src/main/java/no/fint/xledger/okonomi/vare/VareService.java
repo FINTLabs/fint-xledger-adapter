@@ -33,7 +33,7 @@ public class VareService extends CachedHandlerService {
     private List<VareResource> varer;
 
     public VareService(ProductCache cache, VareMapper vareMapper, FakturautstederService fakturautstederService, SalgsordregruppeCache salgsordregruppeCache, ConfigProperties configProperties) {
-        super(configProperties);
+        super(configProperties.getFintCache());
         this.cache = cache;
         this.mapper = vareMapper;
         this.fakturautstederService = fakturautstederService;
